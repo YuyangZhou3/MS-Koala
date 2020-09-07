@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="550.0" prefWidth="1198.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="file.UploadPageController">
+   <children>
+      <ImageView fitHeight="88.0" fitWidth="83.0" layoutX="52.0" layoutY="46.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/upload_icon.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="151.0" layoutY="61.0" text="Upload Genie data or report" textFill="#767171">
+         <font>
+            <Font name="Microsoft YaHei Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label layoutX="151.0" layoutY="94.0" text="The support file of Genie data: .html and .xls, report: .pdf" textFill="#767171">
+         <font>
+            <Font name="Microsoft YaHei Bold" size="13.0" />
+         </font>
+      </Label>
+      <Label layoutX="468.0" layoutY="386.0" text="Drag the files to upload or" textFill="#767171">
+         <font>
+            <Font name="Microsoft YaHei Bold" size="16.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="38.0" fitWidth="93.0" layoutX="697.0" layoutY="382.0" pickOnBounds="true">
+         <image>
+            <Image url="@../images/select_button.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <ImageView fx:id="submitIV" fitHeight="53.0" fitWidth="243.0" layoutX="509.0" layoutY="455.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/submit.png" />
+         </image>
+         <effect>
+            <DropShadow blurType="ONE_PASS_BOX" color="#bcb8b8" />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <ImageView fitHeight="38.0" fitWidth="63.0" layoutX="762.0" layoutY="110.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/html_icon.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="38.0" fitWidth="63.0" layoutX="816.0" layoutY="110.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/xls_icon.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="38.0" fitWidth="63.0" layoutX="870.0" layoutY="110.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/pdf_icon.png" />
+         </image>
+      </ImageView>
+      <ScrollPane layoutX="329.0" layoutY="147.0" prefHeight="228.0" prefWidth="603.0" style="-fx-background-color: white; -fx-border-style: dashed inside; -fx-border-width: 3; -fx-border-color: #bfbfbf;">
+         <content>
+            <HBox fx:id="fileBox" alignment="CENTER" prefHeight="205.0" prefWidth="591.0" spacing="10.0" style="-fx-background-color: white;">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+         </content>
+      </ScrollPane>
+      <ImageView fx:id="addIconIV" disable="true" fitHeight="83.0" fitWidth="57.0" layoutX="598.0" layoutY="225.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/add1.png" />
+         </image>
+      </ImageView>
+      <VBox fx:id="loadingPane" alignment="CENTER" layoutX="325.0" layoutY="146.0" prefHeight="228.0" prefWidth="611.0" style="-fx-background-color: #bfbfbf50;" visible="false">
+         <children>
+            <ProgressIndicator fx:id="loadingProgress" progress="0.0" scaleX="3.0" scaleY="3.0" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

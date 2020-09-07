@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="550.0" prefWidth="1198.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="appointment.AppointmentPageController">
+   <children>
+      <TableView fx:id="appointmentTB" layoutX="18.0" layoutY="82.0" prefHeight="452.0" prefWidth="1165.0">
+        <columns>
+          <TableColumn fx:id="idTC" maxWidth="1500.0" prefWidth="75.0" text="ID" />
+          <TableColumn fx:id="userIdTC" prefWidth="108.0" text="User Name (ID)" />
+            <TableColumn fx:id="doctorIdTC" prefWidth="152.0" text="Doctor Name (ID)" />
+            <TableColumn fx:id="titleTC" prefWidth="152.0" text="Title" />
+            <TableColumn fx:id="dateTC" prefWidth="152.0" text="Date" />
+            <TableColumn fx:id="durationTC" maxWidth="2000.0" prefWidth="152.0" text="Duration" />
+            <TableColumn fx:id="statusTC" maxWidth="2500.0" prefWidth="152.0" text="Status" />
+        </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+      <Label layoutX="32.0" layoutY="42.0" text="Appointment" textFill="#249fe4">
+         <font>
+            <Font name="Microsoft YaHei Bold" size="18.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="53.0" fitWidth="52.0" layoutX="53.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/appointment_logo.png" />
+         </image>
+      </ImageView>
+      <VBox alignment="CENTER" layoutX="330.0" layoutY="14.0" prefHeight="60.0" prefWidth="451.0" style="-fx-border-color: #bfbfbf; -fx-border-radius: 5;">
+         <children>
+            <Label text="Appointment Date" textFill="#686666">
+               <font>
+                  <Font name="Microsoft YaHei Bold" size="13.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Label text="Year" textFill="#686666">
+                     <font>
+                        <Font name="Microsoft YaHei Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <ChoiceBox fx:id="yearCB" prefHeight="25.0" prefWidth="92.0" style="-fx-background-color: white; -fx-border-color: #bfbfbf; -fx-border-radius: 10;" />
+                  <Label text="Month" textFill="#686666">
+                     <font>
+                        <Font name="Microsoft YaHei Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <ChoiceBox fx:id="monthCB" prefHeight="25.0" prefWidth="92.0" style="-fx-background-color: white; -fx-border-color: #bfbfbf; -fx-border-radius: 10;" />
+                  <Label text="Day" textFill="#686666">
+                     <font>
+                        <Font name="Microsoft YaHei Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <ChoiceBox fx:id="dayCB" prefHeight="25.0" prefWidth="92.0" style="-fx-background-color: white; -fx-border-color: #bfbfbf; -fx-border-radius: 10;" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <Label layoutX="813.0" layoutY="19.0" text="Search" textFill="#686666">
+         <font>
+            <Font name="Microsoft YaHei Bold" size="13.0" />
+         </font>
+      </Label>
+      <TextField fx:id="searchTF" layoutX="813.0" layoutY="43.0" prefHeight="25.0" prefWidth="268.0" style="-fx-background-color: white; -fx-border-color: #bfbfbf; -fx-border-radius: 10;" />
+      <RadioButton fx:id="appidRB" layoutX="867.0" layoutY="20.0" mnemonicParsing="false" text="Appointment ID" />
+      <RadioButton fx:id="userRB" layoutX="992.0" layoutY="20.0" mnemonicParsing="false" text="User Name" />
+      <ImageView fx:id="addIV" fitHeight="40.0" fitWidth="34.0" layoutX="1112.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/add_appointment.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <Label layoutX="1114.0" layoutY="55.0" text="ADD" textFill="#686666">
+         <font>
+            <Font name="Microsoft YaHei Bold" size="13.0" />
+         </font>
+      </Label>
+      <Label layoutX="189.0" layoutY="19.0" text="Count" textFill="#686666">
+         <font>
+            <Font name="Microsoft YaHei Bold" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="countLB" alignment="CENTER" layoutX="187.0" layoutY="41.0" prefHeight="25.0" prefWidth="113.0" style="-fx-border-color: #bfbfbf; -fx-border-radius: 10;" text="0" textFill="#686666">
+         <font>
+            <Font name="Microsoft YaHei Bold" size="13.0" />
+         </font>
+      </Label>
+      <AnchorPane fx:id="loadPane" layoutX="10.0" layoutY="10.0" prefHeight="534.0" prefWidth="1182.0" style="-fx-background-color: #bfbfbf31;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane layoutX="432.0" layoutY="159.0" prefHeight="291.0" prefWidth="335.0" style="-fx-background-color: #5f5f5f;">
+               <children>
+                  <ProgressIndicator fx:id="loadProgressIndicator" layoutX="141.0" layoutY="86.0" progress="0.0" scaleX="3.0" scaleY="3.0" />
+                  <Label layoutX="119.0" layoutY="210.0" text="Loading" textFill="WHITE">
+                     <font>
+                        <Font name="Microsoft YaHei Bold" size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+               <effect>
+                  <DropShadow blurType="ONE_PASS_BOX" color="#7c7575" />
+               </effect>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
