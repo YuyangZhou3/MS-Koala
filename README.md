@@ -1,7 +1,7 @@
 
-# Medical Secretary App - COMP90082 2020 S1 Team 04
+# Medical Secretary App - COMP90082-2020-SM2-MS-Koala
 
-This repository contains several components: api, backend, frontend, genie_script, docs and files. Some of them comes from previous teams, and our team has added more functions, made some significant modifications in both frontend and backend and solved bugs to make the whole project work smoothly and meet the client's expectation.  
+This repository contains several components: api, backend, frontend, docs, files and MedicalSecretary_desktop. Some of them comes from previous teams, and our team has added more functions, made some modifications in both frontend, backend and an admin tool. Also, we solved bugs to make the whole project work smoothly and meet the client's expectation.  
 
 Here is the brief introduction of each part of our project.  
 
@@ -11,7 +11,7 @@ Here is the brief introduction of each part of our project.
 
 "frontend" is the mobile app frontend using flutter which can be deployed on both Android and iOS devices.  We modify a lot of interfaces and add more functions in the frontend, and it is very similar with the prototype.  
 
-"genie_script" is a TCP client that can upload certain type files which are used to add or update the data in MySQL database. Since we cannot use the Genie database API directly at present, this is an approach to add or update data in our own MySQL database.  
+"MedicalSecretary_desktop" is the admin tool application in Windows system. It will be used to monitoring new files generated from Genie periodically and upload it to database. Besides, it can be used for administrator to see the details in the database. It contains an .exe file which will install the program in user's desktop. 
 
 "docs" includes the documentations from previous teams and the documentations of API.  
 
@@ -186,7 +186,13 @@ There are 2 more configurations you will want to change. Firstly, the app points
 
 Secondly, the fcm token setup should be changed over to your account. Set up a firebase account, then follow the steps required to activate firebase for your app. This is a very involved process which included generating key files from firebase and changing configurations for both the android and ios subdirectories of the project. Consult the official documentation.  
 
+## Desktop Application
+
+Prerequisites: JDK 14+, Maven, Network support. Working with IntelliJ IDEA. To be continued... 
+
 ## Authors
+
+COMP90082-2020-SM2-MS-Koala team members
 
 Wenkai Huang - wenkai.huang@hotmail.com  
 Callum Dowling - callum.dowling@gmail.com
