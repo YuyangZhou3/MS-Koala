@@ -174,7 +174,6 @@ public class AppointmentPageController implements Initializable, LoadDataTask {
 
     @Override
     public void doing() {
-        System.out.println("doing");
         appointments = FXCollections.observableArrayList(DatabaseDriver.getAppointmentByDate(yearCB.getValue(), monthCB.getValue(), dayCB.getValue()));
         filteredList = new FilteredList<>(appointments, p -> true);
         SortedList<Appointment> sortedList = new SortedList<>(filteredList);

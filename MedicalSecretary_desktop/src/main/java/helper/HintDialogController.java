@@ -27,7 +27,7 @@ public class HintDialogController implements Initializable {
     private String buttonStyle;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        buttonStyle = "-fx-background-color:  #249FE4; -fx-background-radius: 20; -fx-font-size: 13; -fx-text-fill: white;-fx-font-style: Bold";
+        buttonStyle = "-fx-background-color:  #249FE4; -fx-background-radius: 20; -fx-font-size: 13; -fx-text-fill: white;";
         closeIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
            titleLB.getScene().getWindow().hide();
         });

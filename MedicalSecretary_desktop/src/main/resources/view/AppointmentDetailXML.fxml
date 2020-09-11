@@ -139,11 +139,11 @@
                </font>
             </Label>
             <TextField fx:id="statusTF" alignment="CENTER" editable="false" layoutX="371.0" layoutY="262.0" prefHeight="25.0" prefWidth="146.0" style="-fx-border-color: #cacaca; -fx-background-color: white; -fx-border-radius: 25;" text="None" />
-            <AnchorPane fx:id="selectPatientAP" layoutX="7.0" layoutY="14.0" prefHeight="91.0" prefWidth="273.0" style="-fx-background-color: #dddddd; -fx-background-radius: 15;">
+            <AnchorPane fx:id="selectPatientAP" layoutX="7.0" layoutY="14.0" prefHeight="91.0" prefWidth="273.0" style="-fx-background-radius: 15;">
                <children>
-                  <ImageView fitHeight="41.0" fitWidth="44.0" layoutX="12.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="52.0" fitWidth="52.0" layoutX="7.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/user_icon.png" />
+                        <Image url="@../images/patient_icon.png" />
                      </image>
                   </ImageView>
                   <Label fx:id="patientHintLB" layoutX="11.0" layoutY="63.0" text="Patient" textFill="#536d8d">
@@ -154,15 +154,12 @@
                   <Label fx:id="patientIdLB" alignment="CENTER" layoutX="62.0" layoutY="16.0" prefHeight="25.0" prefWidth="202.0" style="-fx-border-color: #CACACA; -fx-background-radius: 25; -fx-background-color: white; -fx-border-radius: 25;" text="id" textFill="#8a8a8a" />
                   <TextField fx:id="patientTF" alignment="CENTER" editable="false" layoutX="62.0" layoutY="52.0" prefHeight="25.0" prefWidth="202.0" style="-fx-border-color: #cacaca; -fx-background-color: white; -fx-border-radius: 25; -fx-background-radius: 25;" text="None" />
                </children>
-               <effect>
-                  <DropShadow blurType="ONE_PASS_BOX" color="#b9b6b6" />
-               </effect>
             </AnchorPane>
-            <AnchorPane fx:id="selectDoctorAP" layoutX="285.0" layoutY="13.0" prefHeight="91.0" prefWidth="241.0" style="-fx-background-color: #dddddd; -fx-background-radius: 15;">
+            <AnchorPane fx:id="selectDoctorAP" layoutX="285.0" layoutY="13.0" prefHeight="91.0" prefWidth="241.0" style="-fx-background-radius: 15;">
                <children>
                   <ImageView fitHeight="52.0" fitWidth="52.0" layoutX="8.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/doctor.png" />
+                        <Image url="@../images/doctor_icon.png" />
                      </image>
                   </ImageView>
                   <Label fx:id="doctorHintLB" layoutX="14.0" layoutY="64.0" text="Doctor" textFill="#536d8d">
@@ -173,9 +170,6 @@
                   <Label fx:id="doctorIdLB" alignment="CENTER" layoutX="63.0" layoutY="13.0" prefHeight="25.0" prefWidth="166.0" style="-fx-border-color: #CACACA; -fx-border-radius: 25; -fx-background-color: white; -fx-background-radius: 25;" text="id" textFill="#8a8a8a" />
                   <TextField fx:id="doctorTF" alignment="CENTER" editable="false" layoutX="64.0" layoutY="51.0" prefHeight="25.0" prefWidth="166.0" style="-fx-border-color: #cacaca; -fx-background-color: white; -fx-border-radius: 25; -fx-background-radius: 25;" text="None" />
                </children>
-               <effect>
-                  <DropShadow blurType="ONE_PASS_BOX" color="#d3d2d2" />
-               </effect>
             </AnchorPane>
          </children>
       </AnchorPane>

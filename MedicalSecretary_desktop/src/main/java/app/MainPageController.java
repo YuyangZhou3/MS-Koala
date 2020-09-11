@@ -72,6 +72,11 @@ public class MainPageController implements Initializable {
             selectMenu(clickAppIV);
             loadContentPage("view/AppointmentPageFXML.fxml",1);
         });
+
+        docIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
+            selectMenu(clickDocIV);
+            loadContentPage("view/DoctorPageFXML.fxml",2);
+        });
     }
 
     private void selectMenu(ImageView imageView){

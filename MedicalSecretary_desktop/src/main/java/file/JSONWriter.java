@@ -56,7 +56,7 @@ public class JSONWriter {
             if (ext.equalsIgnoreCase("html")) {
                 isSuccess = sendHtml(connectionSocket, QueryCommand.getCommandName(filename), file.getAbsolutePath());
             } else if (ext.equalsIgnoreCase("xls")) {
-                isSuccess = sendHtml(connectionSocket,  QueryCommand.getCommandName(filename), file.getAbsolutePath());
+                isSuccess = sendExcel(connectionSocket,  QueryCommand.getCommandName(filename), file.getAbsolutePath());
             } else if (ext.equalsIgnoreCase("pdf")) {
                 isSuccess = sendFile(connectionSocket, QueryCommand.getCommandName(filename), file.getAbsolutePath());
             }
@@ -182,35 +182,39 @@ public class JSONWriter {
             int rowNumber = excelSheet.getLastRowNum();
             System.out.println(rowNumber);
             for (int i = 1; i < rowNumber + 1; i++) {
-                JSONObject msg = new JSONObject();
-                msg.put("command", command.toString());
+                try {
+                    JSONObject msg = new JSONObject();
+                    msg.put("command", command.toString());
 
-                JSONObject jsonObject = new JSONObject();
-                HSSFRow excelRow = excelSheet.getRow(i);
-                int cellNumber = excelRow.getLastCellNum();
-                for (int j = 0; j < cellNumber; j++) {
-                    HSSFCell excelHead = excelHeads.getCell(j);
-                    HSSFCell excelCellContent = excelRow.getCell(j);
+                    JSONObject jsonObject = new JSONObject();
+                    HSSFRow excelRow = excelSheet.getRow(i);
+                    int cellNumber = excelRow.getLastCellNum();
+                    for (int j = 0; j < cellNumber; j++) {
+                        HSSFCell excelHead = excelHeads.getCell(j);
+                        HSSFCell excelCellContent = excelRow.getCell(j);
 
-                    excelHead.setCellType(CellType.STRING);
+                        excelHead.setCellType(CellType.STRING);
 
-                    if (excelCellContent != null) {
-                        excelCellContent.setCellType(CellType.STRING);
-                        jsonObject.put(excelHead.getStringCellValue(), excelCellContent.getStringCellValue());
-                    } else {
-                        jsonObject.put(excelHead.getStringCellValue(), excelCellContent);
+                        if (excelCellContent != null) {
+                            excelCellContent.setCellType(CellType.STRING);
+                            jsonObject.put(excelHead.getStringCellValue(), excelCellContent.getStringCellValue());
+                        } else {
+                            jsonObject.put(excelHead.getStringCellValue(), excelCellContent);
+                        }
                     }
-                }
 
-                msg.put("doc", jsonObject);
-                System.out.println(msg);
-                dos.writeUTF(msg + "\n");
-                dos.flush();
+                    msg.put("doc", jsonObject);
+                    System.out.println(msg);
+                    dos.writeUTF(msg + "\n");
+                    dos.flush();
+                }catch (NullPointerException e) {
+                    break;
+                }
             }
             isSuccess = true;
         } catch (NullPointerException e) {
             System.out.println("File content not found!");
-//                e.printStackTrace();
+            //e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

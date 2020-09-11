@@ -41,8 +41,8 @@ public class AppointmentDetailController implements Initializable {
     // Add Appointment UI
     @FXML private AnchorPane selectPatientAP, selectDoctorAP, searchPane;
     @FXML private Label patientHintLB, doctorHintLB,searchNameLB;
-    @FXML private TextField searchTF;
-    @FXML private ImageView closeSearchIV;
+    //@FXML private TextField searchTF;
+   // @FXML private ImageView closeSearchIV;
     @FXML TableView<Person> searchTV;
     @FXML TableColumn<Person, String> idTC, nameTC, emailTC;
     private ObservableList<Person> people;
@@ -299,7 +299,7 @@ public class AppointmentDetailController implements Initializable {
         sortedList.comparatorProperty().bind(searchTV.comparatorProperty());
         searchTV.setItems(sortedList);
     }
-
+/*
     private void dataFilter(){
         String searchLine = searchTF.getText().toLowerCase().trim();
         filteredList.setPredicate(p->{
@@ -312,7 +312,7 @@ public class AppointmentDetailController implements Initializable {
             }
         });
     }
-
+*/
     private boolean checkTimeFormat(String time){
         if (time.length() != 8){
             return false;

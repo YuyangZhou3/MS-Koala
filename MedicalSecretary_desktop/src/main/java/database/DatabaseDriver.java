@@ -233,6 +233,81 @@ public class DatabaseDriver {
         return people;
     }
 
+    public static ArrayList<Doctor> getDoctors() throws SQLException{
+        ArrayList<Doctor> doctors = new ArrayList<>();
+        var sql = "SELECT id,name,bio,address,phone,fax,email,website,expertise FROM Doctor";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                String bio = resultSet.getString("bio");
+                String address = resultSet.getString("address");
+                String phone = resultSet.getString("phone");
+                String fax = resultSet.getString("fax");
+                String email = resultSet.getString("email");
+                String website = resultSet.getString("website");
+                String expertise = resultSet.getString("expertise");
+
+                doctors.add(new Doctor(id,name,email, bio,phone,address,fax,website,expertise));
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+        return doctors;
+    }
+
+    public static void updateDoctor(Doctor doctor, String name, String email,String bio, String phone, String address,
+                                    String fax, String website, String expertise) throws SQLException{
+        var sql = "Update Doctor set name = ?, email = ?, bio = ?, phone = ?, address = ?, fax = ?, website = ?, expertise = ?  "+
+                "where id = ?";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,name);
+            preparedStatement.setString(2,email);
+            preparedStatement.setString(3,bio);
+            preparedStatement.setString(4,phone);
+            preparedStatement.setString(5,address);
+            preparedStatement.setString(6,fax);
+            preparedStatement.setString(7,website);
+            preparedStatement.setString(8,expertise);
+            preparedStatement.setString(9,doctor.getId());
+
+            int i = preparedStatement.executeUpdate();
+            if (i != 0){
+                doctor.setName(name);
+                doctor.setEmail(email);
+                doctor.setBio(bio);
+                doctor.setPhone(phone);
+                doctor.setAddress(address);
+                doctor.setFax(fax);
+                doctor.setWebsite(website);
+                doctor.setExpertise(expertise);
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+    }
+    public static void deleteDoctor(String id) throws SQLException{
+        String sql = "delete from Doctor where id = ? ";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,id);
+            int i = preparedStatement.executeUpdate();
+            if (i == 0){
+                throw new SQLException("The Doctor was not deleted.");
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+    }
 
     private static void closeDB(PreparedStatement ps, ResultSet rs) {
         try {
@@ -246,6 +321,7 @@ public class DatabaseDriver {
             e.printStackTrace();
         }
     }
+
 
 
 }
