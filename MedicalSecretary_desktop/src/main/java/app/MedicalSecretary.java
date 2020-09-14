@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import util.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +20,9 @@ public class MedicalSecretary extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
+        Util.loadConfigFile();
+
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/MainPageFXML.fxml"));
 
         primaryStage.setScene(new Scene((Parent) loader.load(), 1210, 660));
@@ -31,6 +35,8 @@ public class MedicalSecretary extends Application {
         primaryStage.show();
 
     }
+
+
 
 
     public static void main(String[] args) {

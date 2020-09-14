@@ -3,7 +3,7 @@ package appointment;
 import base.Appointment;
 import database.DatabaseDriver;
 import helper.Helper;
-import helper.LoadingTask;
+import util.LoadingTask;
 import interfaces.LoadDataTask;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

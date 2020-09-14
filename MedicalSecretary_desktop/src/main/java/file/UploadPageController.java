@@ -1,5 +1,6 @@
 package file;
 
+import app.MainPageController;
 import helper.Helper;
 import interfaces.UploadFile;
 import javafx.event.EventHandler;
@@ -32,6 +33,7 @@ public class UploadPageController implements Initializable, UploadFile {
     @FXML private ImageView addIconIV,submitIV,selectFileIV;
     @FXML private VBox loadingPane;
     @FXML private ProgressIndicator loadingProgress;
+    @FXML private ImageView cancelIV;
 
     private List<File> fileList;
     private boolean incorrectFileType, incorrectFileName;
@@ -51,8 +53,14 @@ public class UploadPageController implements Initializable, UploadFile {
             }
 
         });
+        cancelIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
+            mainPageController.openAutoUploadFilePage();
+        });
     }
-
+    private MainPageController mainPageController;
+    public void setParentController(MainPageController mainPageController){
+        this.mainPageController = mainPageController;
+    }
     public void submit(){
         try {
             TCPClient tcpClient = new TCPClient(this);
@@ -69,20 +77,25 @@ public class UploadPageController implements Initializable, UploadFile {
         fileList.clear();
         addIconIV.setVisible(true);
     }
+
+    @Override
+    public void cancel() {
+        loadingPane.setVisible(false);
+        loadingProgress.progressProperty().unbind();
+    }
+
+    @Override
+    public void fail() {
+        loadingPane.setVisible(false);
+        loadingProgress.progressProperty().unbind();
+    }
+
     public List<File> getFileList(){
         return fileList;
     }
 
     public HBox getFileBox(){
         return fileBox;
-    }
-
-    public ProgressIndicator getLoadingProgress() {
-        return loadingProgress;
-    }
-
-    public VBox getLoadingPane() {
-        return loadingPane;
     }
 
     public void initEvent(){

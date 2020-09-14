@@ -27,6 +27,7 @@ public class TCPClient extends Task<Integer> {
     //private Socket connectionSocket;
     private UploadFile controller;
     private JSONWriter jsonWriter;
+    private Socket clientSocket;
 
     public TCPClient( UploadFile controller) throws IOException {
         try{
@@ -40,7 +41,7 @@ public class TCPClient extends Task<Integer> {
 
     @Override
     protected Integer call() throws Exception {
-        Socket clientSocket = initSSLSocket();
+        clientSocket = initSSLSocket();
         jsonWriter = JSONWriter.getInstance();
         jsonWriter.sendUpdateData(clientSocket, controller.getFileList());
         clientSocket.close();
@@ -50,23 +51,29 @@ public class TCPClient extends Task<Integer> {
     @Override
     protected void succeeded() {
         controller.succeeded();
-        controller.getLoadingPane().setVisible(false);
-        controller.getLoadingProgress().progressProperty().unbind();
         controller.displayResultWindow("done", "Upload Success", "Upload Finished\n"+ jsonWriter.getResultStr());
         jsonWriter.setResultStr("");
     }
     @Override
     protected void cancelled() {
-        controller.getLoadingPane().setVisible(false);
-        controller.getLoadingProgress().progressProperty().unbind();
+        controller.cancel();
         jsonWriter.setResultStr("");
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     protected void failed() {
-        controller.getLoadingPane().setVisible(false);
-        controller.getLoadingProgress().progressProperty().unbind();
-        controller.displayResultWindow("error", "upload fail", "Reason: " + getException().getMessage());
+        controller.fail();
+        controller.displayResultWindow("error", "upload fail", "Reason: " +getException().fillInStackTrace().toString());
         jsonWriter.setResultStr("");
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Socket initSSLSocket() {

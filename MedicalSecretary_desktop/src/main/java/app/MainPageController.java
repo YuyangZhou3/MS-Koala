@@ -1,16 +1,21 @@
 package app;
 /*Author: Bowei SONG*/
+import controller.DoctorPageController;
 import database.DatabaseDriver;
+import file.AutoUploadController;
+import file.UploadPageController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import util.HintDialog;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,19 +37,19 @@ public class MainPageController implements Initializable {
     private Stage primaryStage;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        subPageNodes = new Node[7];
-        subControllers = new Object[7];
+        subPageNodes = new Node[8];
+        subControllers = new Object[8];
 
         clickFileIV.setVisible(true);
         initUI();
-        loadContentPage("view/UploadPageFXML.fxml", 0);
+        openAutoUploadFilePage();
         initEvent();
 
         DatabaseDriver.connection();
     }
 
     public void initUI(){
-        Tooltip.install(fileIV, new Tooltip("Upload dat from File"));
+        Tooltip.install(fileIV, new Tooltip("Upload data from File"));
         Tooltip.install(appIV, new Tooltip("Appointment"));
         Tooltip.install(docIV, new Tooltip("Doctor"));
         Tooltip.install(hosIV, new Tooltip("Hospital"));
@@ -57,7 +62,20 @@ public class MainPageController implements Initializable {
 
     public void initEvent(){
         closeIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
-            System.exit(1);
+            HintDialog hintDialog = new HintDialog(primaryStage);
+            Button exitBt = new Button("EXIT");
+            exitBt.setOnAction((e)->{
+                System.exit(1);
+            });
+            Button minBt = new Button("MINIMIZE");
+            minBt.setOnAction((e)->{
+                primaryStage.setIconified(true);
+                hintDialog.hide();
+            });
+            hintDialog.setOptionButton(new Button[]{exitBt, minBt});
+            hintDialog.buildAndShow("Warning", "Close the Application",
+                    "[EXIT] The application will be closed, the function of auto upload will be terminated.\n" +
+                            "[MINIMIZE] The application will be hidden. Reopen via tray");
         });
         minimizeIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             primaryStage.setIconified(true);
@@ -65,7 +83,7 @@ public class MainPageController implements Initializable {
 
         fileIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             selectMenu(clickFileIV);
-            loadContentPage("view/UploadPageFXML.fxml", 0);
+            openAutoUploadFilePage();
         });
 
         appIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
@@ -76,7 +94,19 @@ public class MainPageController implements Initializable {
         docIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             selectMenu(clickDocIV);
             loadContentPage("view/DoctorPageFXML.fxml",2);
+            ((DoctorPageController)subController).loadData();
         });
+    }
+    private MainPageController getThis(){
+        return this;
+    }
+    public void openUploadFilePage(){
+        loadContentPage("view/UploadPageFXML.fxml", 7);
+        ((UploadPageController)subController).setParentController(getThis());
+    }
+    public void openAutoUploadFilePage(){
+        loadContentPage("view/AutoUploadFXML.fxml", 0);
+        ((AutoUploadController)subController).setParentController(getThis());
     }
 
     private void selectMenu(ImageView imageView){

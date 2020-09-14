@@ -1,12 +1,10 @@
-package doctor;
+package controller;
 
-import appointment.AppointmentDetailController;
-import base.Appointment;
 import base.Doctor;
 import database.DatabaseDriver;
 import helper.Helper;
-import helper.HintDialog;
-import helper.LoadingTask;
+import util.HintDialog;
+import util.LoadingTask;
 import interfaces.LoadDataTask;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -58,10 +56,10 @@ public class DoctorPageController implements Initializable, LoadDataTask {
         selectDoctor = null;
         initEvent();
         initTableUI();
-        loadData();
+        //loadData();
     }
 
-    private void loadData(){
+    public void loadData(){
         if (!loadingTask.isRunning()) {
             loadingTask.start();
         }
@@ -205,7 +203,7 @@ public class DoctorPageController implements Initializable, LoadDataTask {
     @Override
     public void before() {
         loadPane.setVisible(true);
-        loadProgressIndicator.progressProperty().bind(loadingTask.progressProperty());
+        //loadProgressIndicator.progressProperty().bind(loadingTask.progressProperty());
     }
 
     @Override
