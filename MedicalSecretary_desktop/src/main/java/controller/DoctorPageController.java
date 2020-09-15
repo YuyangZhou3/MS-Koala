@@ -3,6 +3,7 @@ package controller;
 import base.Doctor;
 import database.DatabaseDriver;
 import helper.Helper;
+import util.Constant;
 import util.HintDialog;
 import util.LoadingTask;
 import interfaces.LoadDataTask;
@@ -60,8 +61,11 @@ public class DoctorPageController implements Initializable, LoadDataTask {
     }
 
     public void loadData(){
-        if (!loadingTask.isRunning()) {
-            loadingTask.start();
+        if (Constant.updateDoctor){
+            Constant.updateDoctor = false;
+            if (!loadingTask.isRunning()) {
+                loadingTask.start();
+            }
         }
     }
 

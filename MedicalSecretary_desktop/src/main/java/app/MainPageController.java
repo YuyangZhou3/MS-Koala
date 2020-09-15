@@ -1,5 +1,6 @@
 package app;
 /*Author: Bowei SONG*/
+import appointment.AppointmentPageController;
 import controller.DoctorPageController;
 import database.DatabaseDriver;
 import file.AutoUploadController;
@@ -42,10 +43,10 @@ public class MainPageController implements Initializable {
 
         clickFileIV.setVisible(true);
         initUI();
-        openAutoUploadFilePage();
+        //openAutoUploadFilePage();
         initEvent();
 
-        DatabaseDriver.connection();
+
     }
 
     public void initUI(){
@@ -89,6 +90,7 @@ public class MainPageController implements Initializable {
         appIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             selectMenu(clickAppIV);
             loadContentPage("view/AppointmentPageFXML.fxml",1);
+            ((AppointmentPageController)subController).loadData();
         });
 
         docIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
@@ -108,6 +110,15 @@ public class MainPageController implements Initializable {
         loadContentPage("view/AutoUploadFXML.fxml", 0);
         ((AutoUploadController)subController).setParentController(getThis());
     }
+    public void openAppointmentPage(){
+        loadContentPage("view/AppointmentPageFXML.fxml",1);
+        ((AppointmentPageController)subController).loadData();
+    }
+    public void openDoctorPage(){
+        loadContentPage("view/DoctorPageFXML.fxml",2);
+        ((DoctorPageController)subController).loadData();
+    }
+
 
     private void selectMenu(ImageView imageView){
         clickFileIV.setVisible(false);clickAppIV.setVisible(false);

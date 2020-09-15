@@ -76,6 +76,8 @@ public class UploadPageController implements Initializable, UploadFile {
         fileBox.getChildren().clear();
         fileList.clear();
         addIconIV.setVisible(true);
+        loadingPane.setVisible(false);
+        loadingProgress.progressProperty().unbind();
     }
 
     @Override

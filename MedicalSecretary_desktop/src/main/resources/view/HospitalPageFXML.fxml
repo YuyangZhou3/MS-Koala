@@ -53,7 +53,7 @@
       </Label>
       <AnchorPane layoutX="145.0" layoutY="14.0" prefHeight="525.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <AnchorPane layoutX="229.0" layoutY="32.0" prefHeight="490.0" prefWidth="717.0" style="-fx-background-color: white; -fx-background-radius: 20;" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="230.0" AnchorPane.rightAnchor="230.0" AnchorPane.topAnchor="30.0">
+            <AnchorPane layoutX="229.0" layoutY="32.0" prefHeight="490.0" prefWidth="717.0" style="-fx-background-color: white; -fx-background-radius: 20;" visible="false" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="230.0" AnchorPane.rightAnchor="230.0" AnchorPane.topAnchor="30.0">
                <effect>
                   <DropShadow blurType="ONE_PASS_BOX" color="#b5b0b0" />
                </effect>
