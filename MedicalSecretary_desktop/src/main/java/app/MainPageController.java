@@ -1,7 +1,9 @@
 package app;
 /*Author: Bowei SONG*/
 import appointment.AppointmentPageController;
+import base.Hospital;
 import controller.DoctorPageController;
+import controller.HospitalPageController;
 import database.DatabaseDriver;
 import file.AutoUploadController;
 import file.UploadPageController;
@@ -86,17 +88,17 @@ public class MainPageController implements Initializable {
             selectMenu(clickFileIV);
             openAutoUploadFilePage();
         });
-
         appIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             selectMenu(clickAppIV);
-            loadContentPage("view/AppointmentPageFXML.fxml",1);
-            ((AppointmentPageController)subController).loadData();
+            openAppointmentPage();
         });
-
         docIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             selectMenu(clickDocIV);
-            loadContentPage("view/DoctorPageFXML.fxml",2);
-            ((DoctorPageController)subController).loadData();
+            openDoctorPage();
+        });
+        hosIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
+            selectMenu(clickHosIV);
+            openHospitalPage();
         });
     }
     private MainPageController getThis(){
@@ -117,6 +119,10 @@ public class MainPageController implements Initializable {
     public void openDoctorPage(){
         loadContentPage("view/DoctorPageFXML.fxml",2);
         ((DoctorPageController)subController).loadData();
+    }
+    public void openHospitalPage(){
+        loadContentPage("view/HospitalPageFXML.fxml",3);
+        ((HospitalPageController)subController).loadData();
     }
 
 

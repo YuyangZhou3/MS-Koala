@@ -57,16 +57,17 @@ public class DoctorPageController implements Initializable, LoadDataTask {
         selectDoctor = null;
         initEvent();
         initTableUI();
-        //loadData();
     }
 
     public void loadData(){
-        if (Constant.updateDoctor){
-            Constant.updateDoctor = false;
+        //if (Constant.updateDoctor){
+      //      Constant.updateDoctor = false;
             if (!loadingTask.isRunning()) {
-                loadingTask.start();
+                loadingTask = new LoadingTask(this);
+                before();
+                new Thread(loadingTask).start();
             }
-        }
+      //  }
     }
 
     private void initEvent(){
@@ -207,7 +208,7 @@ public class DoctorPageController implements Initializable, LoadDataTask {
     @Override
     public void before() {
         loadPane.setVisible(true);
-        //loadProgressIndicator.progressProperty().bind(loadingTask.progressProperty());
+        loadProgressIndicator.progressProperty().bind(loadingTask.progressProperty());
     }
 
     @Override

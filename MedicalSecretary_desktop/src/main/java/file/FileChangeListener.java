@@ -2,8 +2,6 @@ package file;
 
 import interfaces.UploadFile;
 import javafx.application.Platform;
-import javafx.scene.Node;
-import javafx.scene.control.ProgressIndicator;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import util.Constant;
@@ -28,7 +26,6 @@ public class FileChangeListener extends FileAlterationListenerAdaptor implements
                 c.setStatus("RUNNING");
             });
         }
-        //System.out.println("观察文件变化任务开始");
     }
     @Override
     public void onFileCreate(File file) {
@@ -53,17 +50,7 @@ public class FileChangeListener extends FileAlterationListenerAdaptor implements
         uploadFile(file);
         System.out.println("Changed" + file);
     }
-/*
-    @Override
-    public void onFileDelete(File file) {
-        System.out.println("Deleted" + file);
-    }
 
-    @Override
-    public void onStop(FileAlterationObserver observer) {
-        //System.out.println("观察文件变化任务结束");
-    }
-*/
     public void uploadFile(File file){
         TCPClient tcpClient = null;
         try {
