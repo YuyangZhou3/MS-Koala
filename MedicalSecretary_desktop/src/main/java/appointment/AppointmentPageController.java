@@ -3,7 +3,8 @@ package appointment;
 import base.Appointment;
 import database.DatabaseDriver;
 import helper.Helper;
-import helper.LoadingTask;
+import util.Constant;
+import util.LoadingTask;
 import interfaces.LoadDataTask;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -44,7 +45,7 @@ public class AppointmentPageController implements Initializable, LoadDataTask {
     public void initialize(URL location, ResourceBundle resources) {
         loadTask = new LoadingTask(this);
         initUI();
-        loadData();
+        //loadData();
         addIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             subController = Helper.openSubWindow(null, (Stage) addIV.getParent().getScene().getWindow(),"","view/AppointmentDetailXML.fxml");
             ((AppointmentDetailController)subController).open(new Appointment());
@@ -80,7 +81,7 @@ public class AppointmentPageController implements Initializable, LoadDataTask {
 
         yearCB.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if(newValue != null){
-                loadData();
+                loadDataInner();
             }
         }));
         monthCB.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
@@ -103,7 +104,7 @@ public class AppointmentPageController implements Initializable, LoadDataTask {
         }));
         dayCB.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if(newValue != null){
-                loadData();
+                loadDataInner();
             }
         }));
         searchTF.textProperty().addListener(((observableValue, oldValue, newValue) -> {
@@ -144,8 +145,15 @@ public class AppointmentPageController implements Initializable, LoadDataTask {
             return row;
         });
     }
-
-    private void loadData(){
+    public void loadData(){
+        if (Constant.updateAppointment){
+            Constant.updateAppointment = false;
+            if (!loadTask.isRunning()) {
+                loadTask.start();
+            }
+        }
+    }
+    public void loadDataInner(){
         if (!loadTask.isRunning()) {
             loadTask.start();
         }

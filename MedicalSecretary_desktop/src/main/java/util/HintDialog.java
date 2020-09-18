@@ -1,5 +1,6 @@
-package helper;
+package util;
 
+import helper.Helper;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -30,7 +31,7 @@ public class HintDialog {
         stage.initStyle(StageStyle.TRANSPARENT);
         if (parentStage != null) stage.initOwner(parentStage);
         try {
-            controller = (HintDialogController)Helper.replaceSceneContent("view/HintDialogFXML.fxml", stage);
+            controller = (HintDialogController) Helper.replaceSceneContent("view/HintDialogFXML.fxml", stage);
             stage.getScene().setFill(Color.TRANSPARENT);
         } catch (Exception ex) {
             ex.printStackTrace();

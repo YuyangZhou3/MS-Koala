@@ -1,12 +1,11 @@
-package doctor;
+package controller;
 
-import appointment.AppointmentDetailController;
-import base.Appointment;
 import base.Doctor;
 import database.DatabaseDriver;
 import helper.Helper;
-import helper.HintDialog;
-import helper.LoadingTask;
+import util.Constant;
+import util.HintDialog;
+import util.LoadingTask;
 import interfaces.LoadDataTask;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -58,13 +57,17 @@ public class DoctorPageController implements Initializable, LoadDataTask {
         selectDoctor = null;
         initEvent();
         initTableUI();
-        loadData();
     }
 
-    private void loadData(){
-        if (!loadingTask.isRunning()) {
-            loadingTask.start();
-        }
+    public void loadData(){
+        //if (Constant.updateDoctor){
+      //      Constant.updateDoctor = false;
+            if (!loadingTask.isRunning()) {
+                loadingTask = new LoadingTask(this);
+                before();
+                new Thread(loadingTask).start();
+            }
+      //  }
     }
 
     private void initEvent(){

@@ -4,7 +4,7 @@ import base.Appointment;
 import database.DatabaseDriver;
 import file.HintWindowController;
 import file.TCPClient;
-import helper.HintDialog;
+import util.HintDialog;
 import interfaces.UploadFile;
 import helper.Helper;
 import javafx.concurrent.Task;
@@ -273,14 +273,17 @@ public class PDFReaderController implements Initializable, UploadFile {
     }
 
     @Override
-    public Node getLoadingPane() {
-        return loadPane;
+    public void cancel() {
+        loadPane.setVisible(false);
+        loadPD.progressProperty().unbind();
     }
 
     @Override
-    public ProgressIndicator getLoadingProgress() {
-        return loadPD;
+    public void fail() {
+        loadPane.setVisible(false);
+        loadPD.progressProperty().unbind();
     }
+
 
     @Override
     public void displayResultWindow(String type, String title, String message) {

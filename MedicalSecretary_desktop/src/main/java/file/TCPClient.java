@@ -7,26 +7,22 @@ import app.MedicalSecretary;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.KeyStore;
 
 public class TCPClient extends Task<Integer> {
 
-    private static final Path PATH = Paths.get
-            ("src/main/resources/auth").toAbsolutePath();
+    private static final String PATH = "auth";
     private static final String GENIE_DB_NAME = "TestData/user.json";
     private static final String CLIENT_KEY_STORE_PASSWORD = "client";
     private static final String CLIENT_TRUST_KEY_STORE_PASSWORD = "client";
     private static final String CLIENT_KEY_PATH = "/client_ks.jks";
     private static final String TRUST_SERVER_KEY_PATH = "/serverTrust_ks.jks";
 
-    //private Socket connectionSocket;
     private UploadFile controller;
     private JSONWriter jsonWriter;
+    private Socket clientSocket;
 
     public TCPClient( UploadFile controller) throws IOException {
         try{
@@ -40,44 +36,59 @@ public class TCPClient extends Task<Integer> {
 
     @Override
     protected Integer call() throws Exception {
-        Socket clientSocket = initSSLSocket();
+        clientSocket = initSSLSocket();
         jsonWriter = JSONWriter.getInstance();
+        jsonWriter.sendAuthentication(clientSocket);
         jsonWriter.sendUpdateData(clientSocket, controller.getFileList());
-        clientSocket.close();
+        if (clientSocket!=null)clientSocket.close();
         return 0;
     }
 
     @Override
     protected void succeeded() {
         controller.succeeded();
-        controller.getLoadingPane().setVisible(false);
-        controller.getLoadingProgress().progressProperty().unbind();
         controller.displayResultWindow("done", "Upload Success", "Upload Finished\n"+ jsonWriter.getResultStr());
         jsonWriter.setResultStr("");
     }
     @Override
     protected void cancelled() {
-        controller.getLoadingPane().setVisible(false);
-        controller.getLoadingProgress().progressProperty().unbind();
+        controller.cancel();
         jsonWriter.setResultStr("");
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     protected void failed() {
-        controller.getLoadingPane().setVisible(false);
-        controller.getLoadingProgress().progressProperty().unbind();
-        controller.displayResultWindow("error", "upload fail", "Reason: " + getException().getMessage());
+        controller.fail();
+        String exception = "";
+        for (int i = 0; i <getException().getStackTrace().length; i ++){
+            StackTraceElement[] trace = getException().getStackTrace();
+            for (StackTraceElement traceElement : trace)
+                exception +="\tat " + traceElement +"\n";
+        }
+        controller.displayResultWindow("error", "upload fail", "Reason: " +exception);
+
         jsonWriter.setResultStr("");
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Socket initSSLSocket() {
         try{
             KeyStore ks = KeyStore.getInstance("JKS");
-            ks.load(new FileInputStream(PATH + CLIENT_KEY_PATH), CLIENT_KEY_STORE_PASSWORD.toCharArray());
+            //ks.load(new FileInputStream(PATH + CLIENT_KEY_PATH), CLIENT_KEY_STORE_PASSWORD.toCharArray());
+            ks.load(MedicalSecretary.class.getClassLoader().getResourceAsStream(PATH + CLIENT_KEY_PATH), CLIENT_KEY_STORE_PASSWORD.toCharArray());
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
             kmf.init(ks, CLIENT_KEY_STORE_PASSWORD.toCharArray());
 
             KeyStore tks = KeyStore.getInstance("JKS");
-            tks.load(new FileInputStream(PATH + TRUST_SERVER_KEY_PATH), CLIENT_TRUST_KEY_STORE_PASSWORD.toCharArray());
+            tks.load(MedicalSecretary.class.getClassLoader().getResourceAsStream(PATH + TRUST_SERVER_KEY_PATH), CLIENT_TRUST_KEY_STORE_PASSWORD.toCharArray());
             TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
             tmf.init(tks);
 

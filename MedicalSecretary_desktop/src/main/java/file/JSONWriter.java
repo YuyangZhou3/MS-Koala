@@ -1,6 +1,6 @@
 package file;
 
-
+import app.MedicalSecretary;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import util.Constant;
 
 import java.io.*;
 import java.net.Socket;
@@ -16,8 +17,9 @@ import java.util.List;
 
 public class JSONWriter {
     private static JSONWriter instance = null;
-    private final String AUTH_JSON =
-            "src/main/resources/auth/TestData/authentication_client.json";
+    private final String AUTH_JSON = "auth/TestData/authentication_client.json";
+            //"src/main/resources/auth/TestData/authentication_client.json";
+
     private String resultStr = "";
 
     //private long lastUpdate = 0;
@@ -46,12 +48,19 @@ public class JSONWriter {
      * @param connectionSocket
      * @throws Exception
      */
-    public void sendUpdateData(Socket connectionSocket, List<File> files) throws
-            Exception {
+    public void sendUpdateData(Socket connectionSocket, List<File> files) throws Exception {
         sendAuthentication(connectionSocket);
         for (File file : files) {
             String filename = file.getName();
             String ext = filename.substring(filename.lastIndexOf(".") + 1);
+            if (QueryCommand.getCommandName(filename) == QueryCommand.APPOINTMENT){
+                Constant.updateAppointment = true;
+            }else if (QueryCommand.getCommandName(filename) == QueryCommand.DOCTOR){
+                Constant.updateDoctor = true;
+            }else if (QueryCommand.getCommandName(filename) == QueryCommand.HOSPITAL){
+                Constant.updateHospital = true;
+            }
+
             boolean isSuccess = false;
             if (ext.equalsIgnoreCase("html")) {
                 isSuccess = sendHtml(connectionSocket, QueryCommand.getCommandName(filename), file.getAbsolutePath());
@@ -73,13 +82,16 @@ public class JSONWriter {
     /**
      * After established connection, authentication first
      */
-    private void sendAuthentication(Socket connectionSocket) {
+    protected void sendAuthentication(Socket connectionSocket) {
         try {
             OutputStream os = connectionSocket.getOutputStream();
             DataOutputStream dos = new DataOutputStream(os);
 
             JSONParser parser = new JSONParser();
-            Object obj = parser.parse(new FileReader(AUTH_JSON));
+            //Object obj = parser.parse(new FileReader(AUTH_JSON));
+            InputStream is =  MedicalSecretary.class.getClassLoader().getResourceAsStream(AUTH_JSON);
+            InputStreamReader jsonISR = new InputStreamReader(is);
+            Object obj = parser.parse(jsonISR);
             JSONObject jsonObject = (JSONObject) obj;
             jsonObject.put("command", QueryCommand.AUTHENTICATION.toString());
 //            String encryptedMsg = SymmetricEncrypt.getInstance().encrypt(jsonObject.toString());

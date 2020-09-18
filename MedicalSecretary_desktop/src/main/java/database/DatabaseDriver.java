@@ -1,9 +1,6 @@
 package database;
 
-import base.Appointment;
-import base.Doctor;
-import base.Patient;
-import base.Person;
+import base.*;
 import helper.Helper;
 import app.MedicalSecretary;
 
@@ -307,6 +304,33 @@ public class DatabaseDriver {
         }finally {
             closeDB(preparedStatement, resultSet);
         }
+    }
+
+    public static ArrayList<Hospital> getHospitals() throws SQLException{
+        ArrayList<Hospital> hospitals = new ArrayList<>();
+        var sql = "SELECT id,name,address,emergencyDept,phone,aftPhone,fax,email,website FROM Hospital";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                String emergencyDept = resultSet.getString("emergencyDept");
+                String address = resultSet.getString("address");
+                String phone = resultSet.getString("phone");
+                String fax = resultSet.getString("fax");
+                String email = resultSet.getString("email");
+                String website = resultSet.getString("website");
+                String aftPhone = resultSet.getString("aftPhone");
+
+                hospitals.add(new Hospital(id,name,address, emergencyDept,phone,aftPhone,fax,email,website));
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+        return hospitals;
     }
 
     private static void closeDB(PreparedStatement ps, ResultSet rs) {

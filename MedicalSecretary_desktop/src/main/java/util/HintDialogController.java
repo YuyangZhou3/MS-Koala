@@ -1,5 +1,6 @@
-package helper;
+package util;
 
+import helper.Helper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;

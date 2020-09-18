@@ -1,0 +1,28 @@
+[{
+	"id": 1,
+	"title": "Day Oncology Unit",
+	"data_create": "2018-05-16 05:23:41",
+	"data_change": "2018-05-16 05:23:41",
+	"date": "2018-06-12 10:30:00",
+	"detail": "Education session",
+	"note" : "Looking after yourself during chemotherapy - Watch\nPatient Health History Sheet - Please fill in and email back to daychemo.wrD@ramsayhealth.com.au\nPharmacy Medication Sheet - Please fill in and email back to daychemo.wrp@ramsayhealth.com.au\nParking Information - ReadQuestions Sheet - Read",
+	"status":"0",
+	"duration":" 1h",
+	"is_cancelled": false,
+	"pid": "1",
+	"is_confirmed": false
+},{
+	"id": 2,
+	"title": "Warringal Private Hospital / Epworth Eastern",
+	"data_create": "2018-05-16 05:23:41",
+	"data_change": "2018-05-16 05:23:41",
+	"date": "2018-06-12 10:30:00",
+	"detail": "Education session",
+	"note" : "Looking after yourself during chemotherapy - Watch\nPatient Health History Sheet - Please fill in and email back to daychemo.wrD@ramsayhealth.com.au\nPharmacy Medication Sheet - Please fill in and email back to daychemo.wrp@ramsayhealth.com.au\nParking Information - ReadQuestions Sheet - Read",
+	"status":"0",
+	"duration":" 2h",
+	"is_cancelled": false,
+	"pid": "2",
+	"is_confirmed": false
+}
+]

@@ -11,8 +11,8 @@ import java.util.List;
 public interface UploadFile {
     public abstract List<File> getFileList();
     public abstract void succeeded();
-    public abstract Node getLoadingPane();
-    public abstract ProgressIndicator getLoadingProgress();
+    public abstract void cancel();
+    public abstract void fail();
 
     public abstract void displayResultWindow(String type, String title, String message);
 }
