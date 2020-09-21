@@ -4,6 +4,8 @@ import appointment.AppointmentPageController;
 import base.Hospital;
 import controller.DoctorPageController;
 import controller.HospitalPageController;
+import controller.PathologyPageController;
+import controller.RadiologyPageController;
 import database.DatabaseDriver;
 import file.AutoUploadController;
 import file.UploadPageController;
@@ -42,13 +44,9 @@ public class MainPageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         subPageNodes = new Node[8];
         subControllers = new Object[8];
-
         clickFileIV.setVisible(true);
         initUI();
-        //openAutoUploadFilePage();
         initEvent();
-
-
     }
 
     public void initUI(){
@@ -100,6 +98,18 @@ public class MainPageController implements Initializable {
             selectMenu(clickHosIV);
             openHospitalPage();
         });
+        pathIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
+            selectMenu(clickPathIV);
+            openPathologyPage();
+        });
+        radIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
+            selectMenu(clickRadIV);
+            openRadiologyPage();
+        });
+        userIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
+            selectMenu(clickUserIV);
+            //openPathologyPage();
+        });
     }
     private MainPageController getThis(){
         return this;
@@ -123,6 +133,14 @@ public class MainPageController implements Initializable {
     public void openHospitalPage(){
         loadContentPage("view/HospitalPageFXML.fxml",3);
         ((HospitalPageController)subController).loadData();
+    }
+    public void openPathologyPage(){
+        loadContentPage("view/PathologyPageFXML.fxml",4);
+        ((PathologyPageController)subController).loadData();
+    }
+    public void openRadiologyPage(){
+        loadContentPage("view/RadiologyPageFXML.fxml",5);
+        ((RadiologyPageController)subController).loadData();
     }
 
 

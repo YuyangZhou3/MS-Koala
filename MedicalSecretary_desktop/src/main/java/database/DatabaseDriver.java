@@ -290,8 +290,8 @@ public class DatabaseDriver {
             closeDB(preparedStatement, resultSet);
         }
     }
-    public static void deleteDoctor(String id) throws SQLException{
-        String sql = "delete from Doctor where id = ? ";
+    public static void deleteData(String type, String id) throws SQLException{
+        String sql = "delete from "+type+" where id = ? ";
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
@@ -299,7 +299,7 @@ public class DatabaseDriver {
             preparedStatement.setString(1,id);
             int i = preparedStatement.executeUpdate();
             if (i == 0){
-                throw new SQLException("The Doctor was not deleted.");
+                throw new SQLException("The "+type+" was not deleted.");
             }
         }finally {
             closeDB(preparedStatement, resultSet);
@@ -331,6 +331,54 @@ public class DatabaseDriver {
             closeDB(preparedStatement, resultSet);
         }
         return hospitals;
+    }
+    public static ArrayList<Pathology> getPathologies() throws SQLException{
+        ArrayList<Pathology> pathologies = new ArrayList<>();
+        var sql = "SELECT id,name,address,phone,hours,website FROM Pathology";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                String address = resultSet.getString("address");
+                String phone = resultSet.getString("phone");
+                String hours = resultSet.getString("hours");
+                String website = resultSet.getString("website");
+
+                pathologies.add(new Pathology(id,name,address,phone,hours,website));
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+        return pathologies;
+    }
+    public static ArrayList<Radiology> getRadiologies() throws SQLException{
+        ArrayList<Radiology> radiologies = new ArrayList<>();
+        var sql = "SELECT id,name,address,phone,fax,hours,email,website FROM Radiology";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                String address = resultSet.getString("address");
+                String phone = resultSet.getString("phone");
+                String hours = resultSet.getString("hours");
+                String website = resultSet.getString("website");
+                String fax = resultSet.getString("fax");
+                String email = resultSet.getString("email");
+
+                radiologies.add(new Radiology(id,name,address,phone,fax,hours,email,website));
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+        return radiologies;
     }
 
     private static void closeDB(PreparedStatement ps, ResultSet rs) {
