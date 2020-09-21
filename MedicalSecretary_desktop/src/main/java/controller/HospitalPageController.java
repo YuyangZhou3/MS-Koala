@@ -3,6 +3,7 @@ package controller;
 import base.Doctor;
 import base.Hospital;
 import database.DatabaseDriver;
+import helper.Helper;
 import interfaces.LoadDataTask;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,9 +17,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import util.HintDialog;
 import util.LoadingTask;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class HospitalPageController implements Initializable, LoadDataTask {
@@ -85,6 +89,25 @@ public class HospitalPageController implements Initializable, LoadDataTask {
             dataFilter();
             countLB.setText(filteredList.size()+"");
         }));
+        deleteIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
+            HintDialog hintDialog = new HintDialog((Stage) idLB.getScene().getWindow());
+            Button confirmBt = new Button("YES [DELETE]");
+            confirmBt.setOnAction((e)->{
+                try {
+                    hintDialog.hide();
+                    DatabaseDriver.deleteData("Hospital" , hospital.getId());
+                    hospitals.remove(hospital);
+                    detailPane.setVisible(false);
+                    hospital = null;
+                } catch (SQLException throwables) {
+                    Helper.displayHintWindow((Stage) idLB.getScene().getWindow(),"error", "Delete failed",
+                            "Reason: " + throwables.getMessage());
+                }
+            });
+            hintDialog.setOptionButton(new Button[]{confirmBt});
+            hintDialog.buildAndShow("warning", "Delete the Hospital information?","The Hospital information will be deleted. This operation cannot be undone!" +
+                    "\nAre you sure to delete the Hospital?");
+        });
     }
     private void afterLoad(){
         countLB.setText(filteredList.size()+"");
