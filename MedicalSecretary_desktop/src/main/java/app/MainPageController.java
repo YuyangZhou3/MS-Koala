@@ -1,9 +1,7 @@
 package app;
 /*Author: Bowei SONG*/
-import appointment.AppointmentPageController;
-import base.Hospital;
+import controller.AppointmentPageController;
 import controller.*;
-import database.DatabaseDriver;
 import file.AutoUploadController;
 import file.UploadPageController;
 import javafx.event.EventHandler;
@@ -21,7 +19,6 @@ import util.HintDialog;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class MainPageController implements Initializable {

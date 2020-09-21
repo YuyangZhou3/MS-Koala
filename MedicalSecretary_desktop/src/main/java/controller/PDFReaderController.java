@@ -1,4 +1,4 @@
-package appointment;
+package controller;
 
 import base.Appointment;
 import database.DatabaseDriver;
@@ -11,7 +11,6 @@ import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
