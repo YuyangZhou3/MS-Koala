@@ -381,6 +381,33 @@ public class DatabaseDriver {
         return radiologies;
     }
 
+    public static ArrayList<Patient> getPatients() throws SQLException{
+        ArrayList<Patient> patients = new ArrayList<>();
+        var sql = "SELECT id,firstname,middlename,surname,dob,email,street,suburb,state FROM User where role = 'PATIENT'";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                String id = resultSet.getString("id");
+                String firstname = resultSet.getString("firstname");
+                String middlename = resultSet.getString("middlename");
+                String surname = resultSet.getString("surname");
+                String dob = resultSet.getString("dob");
+                String email = resultSet.getString("email");
+                String street = resultSet.getString("street");
+                String suburb = resultSet.getString("suburb");
+                String state = resultSet.getString("state");
+
+                patients.add(new Patient(id,firstname,middlename,surname,dob,email,street,suburb,state));
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+        return patients;
+    }
+
     private static void closeDB(PreparedStatement ps, ResultSet rs) {
         try {
             if(ps != null) {

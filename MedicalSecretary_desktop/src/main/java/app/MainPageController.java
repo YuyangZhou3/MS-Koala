@@ -2,10 +2,7 @@ package app;
 /*Author: Bowei SONG*/
 import appointment.AppointmentPageController;
 import base.Hospital;
-import controller.DoctorPageController;
-import controller.HospitalPageController;
-import controller.PathologyPageController;
-import controller.RadiologyPageController;
+import controller.*;
 import database.DatabaseDriver;
 import file.AutoUploadController;
 import file.UploadPageController;
@@ -108,7 +105,7 @@ public class MainPageController implements Initializable {
         });
         userIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             selectMenu(clickUserIV);
-            //openPathologyPage();
+            openUserPage();
         });
     }
     private MainPageController getThis(){
@@ -141,6 +138,10 @@ public class MainPageController implements Initializable {
     public void openRadiologyPage(){
         loadContentPage("view/RadiologyPageFXML.fxml",5);
         ((RadiologyPageController)subController).loadData();
+    }
+    public void openUserPage(){
+        loadContentPage("view/UserPageFXML.fxml",6);
+        ((UserPageController)subController).loadData();
     }
 
 

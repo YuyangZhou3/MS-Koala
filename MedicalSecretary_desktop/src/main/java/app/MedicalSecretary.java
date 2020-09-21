@@ -100,6 +100,10 @@ public class MedicalSecretary extends Application {
                 Platform.runLater(()->{ loadString.set("Loading Radiology data"); });
                 loadProgress.setValue(80);
 
+                mainPageController.openUserPage();
+                Platform.runLater(()->{ loadString.set("Loading User data"); });
+                loadProgress.setValue(85);
+
                 mainPageController.openAutoUploadFilePage();
                 Platform.runLater(()->{ loadString.set("Initializing Auto Upload Function");});
                 loadProgress.setValue(90);
