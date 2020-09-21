@@ -3,13 +3,11 @@ package app;
 import database.DatabaseDriver;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.application.Preloader;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -19,6 +17,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import util.Util;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,10 +29,12 @@ public class MedicalSecretary extends Application {
     public static ArrayList<String> appointmentStatus = new ArrayList<>(Arrays.asList("UNCONFIRMED","CONFIRMED","CANCELLED"));
 
     private Stage loaderStage = null;
+    private Stage mainStage = null;
     @Override
     public void start(Stage primaryStage) throws Exception{
-
+        mainStage = primaryStage;
         initPreLoader();
+        Platform.setImplicitExit(false);
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/MainPageFXML.fxml"));
         primaryStage.setScene(new Scene((Parent) loader.load(), 1210, 660));
         MainPageController mainPageController = loader.getController();
@@ -43,6 +45,7 @@ public class MedicalSecretary extends Application {
                 if(Boolean.TRUE.equals(t1)){
                     Platform.runLater(new Runnable(){
                         public void run(){
+                            setTray();
                             loaderStage.hide();
                             primaryStage.setResizable(false);
                             primaryStage.initStyle(StageStyle.TRANSPARENT);
@@ -55,6 +58,10 @@ public class MedicalSecretary extends Application {
         });
     }
 
+
+    /*
+    * Pre-Loader
+    * */
     private void initPreLoader() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/PreLoaderFXML.fxml"));
         loaderStage = new Stage();
@@ -119,7 +126,38 @@ public class MedicalSecretary extends Application {
         };
         new Thread(task).start();
     }
+    /*
 
+     */
+
+    public void setTray() {
+        if (SystemTray.isSupported()) {
+            SystemTray tray = SystemTray.getSystemTray();
+            Image image = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("images/logo.png"));
+            String text = "Medical Secretary";
+            PopupMenu popMenu = new PopupMenu();
+            MenuItem itmOpen = new MenuItem("Open Dashboard");
+            itmOpen.addActionListener((ActionEvent e) -> {
+                Platform.runLater(() -> {
+                    mainStage.show();
+                });
+            });
+            MenuItem itmExit = new MenuItem("Close Application");
+            itmExit.addActionListener((ActionEvent e) -> {
+                System.exit(1);
+            });
+            popMenu.add(itmOpen);
+            popMenu.add(itmExit);
+
+            TrayIcon trayIcon = new TrayIcon(image, text, popMenu);
+            trayIcon.setImageAutoSize(true);
+            try {
+                tray.add(trayIcon);
+            } catch (AWTException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
   /*  public static void main(String[] args) {
         launch(args);
     }*/

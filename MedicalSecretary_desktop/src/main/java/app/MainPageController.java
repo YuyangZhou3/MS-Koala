@@ -67,7 +67,7 @@ public class MainPageController implements Initializable {
             });
             Button minBt = new Button("MINIMIZE");
             minBt.setOnAction((e)->{
-                primaryStage.setIconified(true);
+                primaryStage.hide();
                 hintDialog.hide();
             });
             hintDialog.setOptionButton(new Button[]{exitBt, minBt});
@@ -76,7 +76,7 @@ public class MainPageController implements Initializable {
                             "[MINIMIZE] The application will be hidden. Reopen via tray");
         });
         minimizeIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
-            primaryStage.setIconified(true);
+            primaryStage.hide();
         });
 
         fileIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
