@@ -1,6 +1,8 @@
 package app;
 /*Author: Bowei SONG - 2020*/
+import controller.SettingController;
 import database.DatabaseDriver;
+import helper.Helper;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.*;
@@ -20,14 +22,8 @@ import util.Util;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MedicalSecretary extends Application {
-    public static String ip = "52.63.150.111";
-    public static int port = 11111;
-    public static ArrayList<String> appointmentStatus = new ArrayList<>(Arrays.asList("UNCONFIRMED","CONFIRMED","CANCELLED"));
-
     private Stage loaderStage = null;
     private Stage mainStage = null;
     @Override
@@ -86,7 +82,10 @@ public class MedicalSecretary extends Application {
             protected  Void call()throws Exception{
                 Util.loadConfigFile();
                 Platform.runLater(()->{ loadString.set("Connecting the server"); });
-                DatabaseDriver.connection();
+                boolean connect = DatabaseDriver.connection();
+                if (!connect){
+                    throw new Exception("1");
+                }
 
                 mainPageController.openUploadFilePage();
                 Platform.runLater(()->{ loadString.set("Initializing Upload File"); });
@@ -121,13 +120,29 @@ public class MedicalSecretary extends Application {
             }
             @Override
             protected void failed() {
-                System.out.println(getException().fillInStackTrace());
+                if (getException().getMessage().equals("1")){
+                    FXMLLoader loader = new FXMLLoader(DatabaseDriver.class.getClassLoader().getResource("view/SettingFXML.fxml"));
+                    Stage stage = new Stage();
+                    try {
+                        stage.setScene(new Scene((Parent) loader.load(), 631, 194));
+                        SettingController controller = loader.getController();
+                        stage.initOwner(loaderStage);
+                        stage.setResizable(false);
+                        stage.initStyle(StageStyle.TRANSPARENT);
+                        stage.getScene().setFill(Color.TRANSPARENT);
+                        stage.show();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                }else {
+                    Helper.displayHintWindow(loaderStage,"error","Load Failed","Reason: " + getException().getMessage());
+                }
             }
         };
         new Thread(task).start();
     }
     /*
-
+        Tray function
      */
 
     public void setTray() {

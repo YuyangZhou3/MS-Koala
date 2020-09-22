@@ -4,21 +4,28 @@ import controller.AppointmentPageController;
 import controller.*;
 import file.AutoUploadController;
 import file.UploadPageController;
+import helper.Helper;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import util.Constant;
 import util.HintDialog;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class MainPageController implements Initializable {
@@ -27,6 +34,11 @@ public class MainPageController implements Initializable {
     @FXML private ImageView clickFileIV, clickAppIV, clickDocIV, clickHosIV,clickPathIV,clickRadIV, clickUserIV;
     @FXML private ImageView fileIV, appIV, docIV, hosIV,pathIV,radIV, userIV;
     @FXML private ImageView minimizeIV, closeIV;
+    @FXML private ImageView settingIV;
+    @FXML private HBox settingBox;
+    @FXML private TextField ipTF, portTF;
+    @FXML private Button changeBT, backBT;
+    @FXML private Label ipLB, portLB;
 
     private Node[] subPageNodes;
     private Object[] subControllers;
@@ -39,6 +51,9 @@ public class MainPageController implements Initializable {
         subPageNodes = new Node[8];
         subControllers = new Object[8];
         clickFileIV.setVisible(true);
+        ipLB.setText("Server IP: "+Constant.ip);
+        portLB.setText("Port: "+Constant.port);
+        ipTF.setText(Constant.ip); portTF.setText(Constant.port+"");
         initUI();
         initEvent();
     }
@@ -103,6 +118,45 @@ public class MainPageController implements Initializable {
         userIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             selectMenu(clickUserIV);
             openUserPage();
+        });
+
+        settingIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
+            settingBox.setVisible(true);
+        });
+        backBT.setOnAction((e)->{
+            settingBox.setVisible(false);
+        });
+        changeBT.setOnAction((e)->{
+            try {
+                String ip = ipTF.getText().trim();
+                int port = Integer.parseInt(portTF.getText().trim());
+                if (!ip.equalsIgnoreCase(Constant.ip) || port != Constant.port){
+                    HintDialog hintDialog = new HintDialog((Stage) ipLB.getScene().getWindow());
+                    Button confirmBt = new Button("YES [CHANGE]");
+                    confirmBt.setOnAction((event)->{
+                        hintDialog.hide();
+                        try {
+                            util.Util.writeConfigFile("serverIP", ip);
+                            util.Util.writeConfigFile("TCPPort", port + "");
+                            System.exit(1);
+                        }catch (Exception exception){
+                            Helper.displayHintWindow((Stage) ipLB.getScene().getWindow(),"error", "Change failed",
+                                    "Reason: " + exception.getMessage());
+                        }
+
+                    });
+                    hintDialog.setOptionButton(new Button[]{confirmBt});
+                    hintDialog.buildAndShow("warning", "Change the server IP and Port?","The application need to restart" +
+                            "\nAre you sure to change the ip and port?");
+                }
+                else {
+                    settingBox.setVisible(false);
+                }
+            }catch (Exception exception){
+                Helper.displayHintWindow((Stage) ipLB.getScene().getWindow(),"error", "Change failed",
+                    "Reason: " + exception.getMessage());
+            }
+
         });
     }
     private MainPageController getThis(){

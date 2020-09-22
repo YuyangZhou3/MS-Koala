@@ -3,6 +3,7 @@ package file;
 import interfaces.UploadFile;
 import javafx.concurrent.Task;
 import app.MedicalSecretary;
+import util.Constant;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -96,7 +97,7 @@ public class TCPClient extends Task<Integer> {
 
             context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
-            Socket sslSocket = context.getSocketFactory().createSocket(MedicalSecretary.ip, MedicalSecretary.port);
+            Socket sslSocket = context.getSocketFactory().createSocket(Constant.ip, Constant.port);
 
             return sslSocket;
         } catch (Exception e){

@@ -64,7 +64,8 @@ public class AutoUploadController implements Initializable {
                     }
                     monitor = fileListenerFactory.getMonitor(this, Constant.AUTO_PATH);
                     monitor.start();
-                    Util.writeConfigFile();
+
+                    Util.writeConfigFile("uploadPath", Constant.AUTO_PATH);
                 }catch (Exception exception){
                     exception.printStackTrace();
                 }

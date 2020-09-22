@@ -4,6 +4,7 @@ import base.Appointment;
 import database.DatabaseDriver;
 import file.HintWindowController;
 import file.TCPClient;
+import util.Constant;
 import util.HintDialog;
 import interfaces.UploadFile;
 import helper.Helper;
@@ -66,7 +67,7 @@ public class PDFReaderController implements Initializable, UploadFile {
     }
 
     private void downLoadFile() throws IOException {
-        String url = "http://" + MedicalSecretary.ip + ":8080/medsec/api/" + "file/link/" + appointment.getFileID();
+        String url = "http://" + Constant.ip + ":8080/medsec/api/" + "file/link/" + appointment.getFileID();
         System.out.println(url);
         URL requestURL = new URL(url);
         System.out.println(requestURL.getAuthority());

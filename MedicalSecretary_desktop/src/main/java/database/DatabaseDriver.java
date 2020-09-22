@@ -2,27 +2,26 @@ package database;
 
 import base.*;
 import helper.Helper;
-import app.MedicalSecretary;
-
+import util.Constant;
 import java.sql.*;
 import java.util.ArrayList;
 
 public class DatabaseDriver {
     public static Connection connection = null;
     protected static String dbClassName = "com.mysql.cj.jdbc.Driver";
-    protected static String dbUrl = "jdbc:mysql://"+ MedicalSecretary.ip+":8889/medsec?serverTimezone=UTC&characterEncoding=utf-8";
+    protected static String dbUrl = "jdbc:mysql://"+ Constant.ip+":8889/medsec?serverTimezone=UTC&characterEncoding=utf-8";
     protected static String dbUser = "root";
     protected static String dbPwd = "root";
 
-    public static void connection(){
+    public static boolean connection(){
         connection = null;
         try {
             Class.forName(dbClassName);
             connection = DriverManager.getConnection(dbUrl, dbUser, dbPwd);
             System.out.println("Opened database successfully");
+            return true;
         } catch ( Exception e ) {
-            System.out.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(1);
+            return false;
         }
     }
 
