@@ -292,14 +292,51 @@ public class DatabaseDriver {
                 String street = resultSet.getString("street");
                 String suburb = resultSet.getString("suburb");
                 String state = resultSet.getString("state");
-
-                patients.add(new Patient(id,firstname,middlename,surname,dob,email,street,suburb,state));
+                Patient patient = new Patient(id,firstname,middlename,surname,dob,email,street,suburb,state);
+                patient.setResources(getResources(id));
+                patients.add(patient);
             }
         }finally {
             closeDB(preparedStatement, resultSet);
         }
         return patients;
     }
+    public static ArrayList<Resource> getResources(String userID) throws SQLException{
+        ArrayList<Resource> resources = new ArrayList<>();
+        var sql = "SELECT id,name,website FROM Resource where uid = ?";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, userID);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                String website = resultSet.getString("website");
+                resources.add(new Resource(id,name,website));
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+        return resources;
+    }
+
+    /*public static void insertResource(String uid) throws SQLException{
+        String sql = "INSERT INTO Resource (id,uid,name,website) VALUES (?,?,?,?)";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,id);
+            int i = preparedStatement.executeUpdate();
+            if (i == 0){
+                throw new SQLException("The Resource was not inserted.");
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+    }*/
 
     private static void closeDB(PreparedStatement ps, ResultSet rs) {
         try {

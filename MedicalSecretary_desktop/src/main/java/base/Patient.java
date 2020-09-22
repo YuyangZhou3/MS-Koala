@@ -1,10 +1,13 @@
 package base;
 
+import java.util.ArrayList;
+
 public class Patient extends Person{
 
     private String firstName, midName, surname;
     private String dob;
     private String street,suburb,state;
+    private ArrayList<Resource> resources;
     public Patient(String id, String name, String email) {
         super(id, name, email);
     }
@@ -20,6 +23,16 @@ public class Patient extends Person{
         this.state = state;
     }
 
+    public ArrayList<Resource> getResources() {
+        return resources;
+    }
+
+    public void setResources(ArrayList<Resource> resources){
+        this.resources = resources;
+    }
+    private void addResource(Resource resource){
+        resources.add(resource);
+    }
     public String getFirstName() {
         return firstName;
     }
