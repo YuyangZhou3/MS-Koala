@@ -2,34 +2,33 @@ package database;
 
 import base.*;
 import helper.Helper;
-import app.MedicalSecretary;
-
+import util.Constant;
 import java.sql.*;
 import java.util.ArrayList;
 
 public class DatabaseDriver {
     public static Connection connection = null;
     protected static String dbClassName = "com.mysql.cj.jdbc.Driver";
-    protected static String dbUrl = "jdbc:mysql://"+ MedicalSecretary.ip+":8889/medsec?serverTimezone=UTC&characterEncoding=utf-8";
+    protected static String dbUrl = "jdbc:mysql://"+ Constant.ip+":8889/medsec?serverTimezone=UTC&characterEncoding=utf-8";
     protected static String dbUser = "root";
     protected static String dbPwd = "root";
 
-    public static void connection(){
+    public static boolean connection(){
         connection = null;
         try {
             Class.forName(dbClassName);
             connection = DriverManager.getConnection(dbUrl, dbUser, dbPwd);
             System.out.println("Opened database successfully");
+            return true;
         } catch ( Exception e ) {
-            System.out.println( e.getClass().getName() + ": " + e.getMessage() );
-            //System.exit(0);
+            return false;
         }
     }
 
     public static ArrayList<Appointment> getAppointmentByDate(String year, String month, String day){
         ArrayList<Appointment> appointments = new ArrayList<>();
         //DATE_FORMAT(a.date, '%Y-%m-%d')
-        String sql = "SELECT a.id, a.uid, u.firstname, u.middlename, u.surname, a.did, d.name, a.title, a.date as appDate, "+
+        String sql = "SELECT a.id, a.uid, u.firstname, u.middlename, u.surname, a.did, d.name, a.title,a.detail,a.date_create,a.date_change, a.note,a.user_note, a.date as appDate, "+
                 "a.duration, a.status from Appointment a, User u, Doctor d where a.uid = u.id and a.did = d.id and Year(a.date) = ?";
         if (!month.equalsIgnoreCase("all")){
             sql += " and Month(a.date) = '" + month + "'";
@@ -56,9 +55,22 @@ public class DatabaseDriver {
                 String appDate = resultSet.getString("appDate");
                 String duration = resultSet.getString("duration");
                 String status = resultSet.getString("status");
+                String detail = resultSet.getString("detail");
+
+                String date_create = resultSet.getString("date_create");
+                String date_change = resultSet.getString("date_change");
+                String note = resultSet.getString("note");
+                String user_note = resultSet.getString("user_note");
 
                 Appointment appointment = new Appointment(id,uid,firstname+" "+ middlename+" "+ surname, did,doctorName,title,appDate,duration,status);
+                appointment.setChangeDate(date_change);
+                appointment.setCreateDate(date_create);
+                appointment.setDetail(detail);
+                appointment.setNote(note);
+                appointment.setUserNote(user_note);
+                getAppointmentReport(appointment);
                 appointments.add(appointment);
+
             }
             preparedStatement.close();
             resultSet.close();
@@ -71,64 +83,6 @@ public class DatabaseDriver {
         return appointments;
     }
 
-    public static void getAppointment(Appointment appointment) throws SQLException{
-        String sql = "SELECT detail, date_create, date_change, note,user_note  "+
-                " from Appointment where id = ?";
-        PreparedStatement preparedStatement =null;
-        ResultSet resultSet = null;
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,appointment.getId());
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                String detail = resultSet.getString("detail");
-                String date_create = resultSet.getString("date_create");
-                String date_change = resultSet.getString("date_change");
-                String note = resultSet.getString("note");
-                String user_note = resultSet.getString("user_note");
-
-                appointment.setChangeDate(date_change);
-                appointment.setCreateDate(date_create);
-                appointment.setDetail(detail);
-                appointment.setNote(note);
-                appointment.setUserNote(user_note);
-            }
-        }finally {
-            closeDB(preparedStatement, resultSet);
-        }
-    }
-
-    public static void updateAppointment(Appointment appointment, String title, String detail, String dateTime,
-                                       String duration, String status, String note, String userNote) throws SQLException{
-        String sql = "Update Appointment a set a.title = ?, a.detail = ?, a.date = ?, a.duration = ?, a.status = ?, a.note = ?, a.user_note = ? "+
-                "where a.id = ?";
-        PreparedStatement preparedStatement =null;
-        ResultSet resultSet = null;
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,title);
-            preparedStatement.setString(2,detail);
-            preparedStatement.setString(3,dateTime);
-            preparedStatement.setString(4,duration);
-            preparedStatement.setString(5,status);
-            preparedStatement.setString(6,note);
-            preparedStatement.setString(7,userNote);
-            preparedStatement.setString(8,appointment.getId());
-
-            int i = preparedStatement.executeUpdate();
-            if (i != 0){
-                appointment.setTitle(title);
-                appointment.setDetail(detail);
-                appointment.setDateTime(dateTime);
-                appointment.setDuration(duration);
-                appointment.setStatus(status);
-                appointment.setNote(note);
-                appointment.setUserNote(userNote);
-            }
-        }finally {
-            closeDB(preparedStatement, resultSet);
-        }
-    }
 
     public static void getAppointmentReport(Appointment appointment) throws SQLException{
         String sql = "SELECT id, title, link from File where apptid = ?  ";
@@ -166,68 +120,6 @@ public class DatabaseDriver {
         }finally {
             closeDB(preparedStatement, resultSet);
         }
-    }
-    public static void insertAppointment(Appointment appointment) throws SQLException{
-        String sql = "insert into Appointment values (?,?,?,?,?,?,?,?,?,?,?,?)";
-        PreparedStatement preparedStatement =null;
-        ResultSet resultSet = null;
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,appointment.getId());
-            preparedStatement.setString(2,appointment.getUserID());
-            preparedStatement.setString(3,appointment.getDoctorID());
-            preparedStatement.setString(4,appointment.getTitle());
-            preparedStatement.setString(5,appointment.getDetail());
-            preparedStatement.setString(6,appointment.getCreateDate());
-            preparedStatement.setString(7,appointment.getChangeDate());
-            preparedStatement.setString(8,appointment.getDateTime());
-            preparedStatement.setString(9,appointment.getDuration());
-            preparedStatement.setString(10,appointment.getNote());
-            preparedStatement.setString(11,appointment.getUserNote());
-            preparedStatement.setString(12,appointment.getStatus());
-            int i = preparedStatement.executeUpdate();
-            if (i == 0){
-                throw new SQLException("The file was not inserted.");
-            }
-        }finally {
-            closeDB(preparedStatement, resultSet);
-        }
-    }
-
-    //
-    public static ArrayList<Person> getPersonForSelect(String type) throws SQLException{
-        String sql = "SELECT id, firstname, middlename, surname, email from User where role = ?  ";
-        if (type.equalsIgnoreCase("Doctor")){
-            sql = "SELECT id, name, email from Doctor  ";
-        }
-        PreparedStatement preparedStatement =null;
-        ResultSet resultSet = null;
-        ArrayList<Person> people = new ArrayList<>();
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-            if (type.equalsIgnoreCase("patient")) preparedStatement.setString(1,"PATIENT");
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                String id = resultSet.getString("id");
-                String name = "";
-                String email = resultSet.getString("email");
-                if (type.equalsIgnoreCase("patient")) {
-                    name = resultSet.getString("firstname") + " " + resultSet.getString("middlename")
-                            + " "+ resultSet.getString("surname");
-                    people.add(new Patient(id, name, email));
-                }
-                else {
-                    name = resultSet.getString("name");
-                    people.add(new Doctor(id, name, email));
-                }
-
-
-            }
-        }finally {
-            closeDB(preparedStatement, resultSet);
-        }
-        return people;
     }
 
     public static ArrayList<Doctor> getDoctors() throws SQLException{
@@ -290,8 +182,8 @@ public class DatabaseDriver {
             closeDB(preparedStatement, resultSet);
         }
     }
-    public static void deleteDoctor(String id) throws SQLException{
-        String sql = "delete from Doctor where id = ? ";
+    public static void deleteData(String type, String id) throws SQLException{
+        String sql = "delete from "+type+" where id = ? ";
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
@@ -299,7 +191,7 @@ public class DatabaseDriver {
             preparedStatement.setString(1,id);
             int i = preparedStatement.executeUpdate();
             if (i == 0){
-                throw new SQLException("The Doctor was not deleted.");
+                throw new SQLException("The "+type+" was not deleted.");
             }
         }finally {
             closeDB(preparedStatement, resultSet);
@@ -332,6 +224,118 @@ public class DatabaseDriver {
         }
         return hospitals;
     }
+    public static ArrayList<Pathology> getPathologies() throws SQLException{
+        ArrayList<Pathology> pathologies = new ArrayList<>();
+        var sql = "SELECT id,name,address,phone,hours,website FROM Pathology";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                String address = resultSet.getString("address");
+                String phone = resultSet.getString("phone");
+                String hours = resultSet.getString("hours");
+                String website = resultSet.getString("website");
+
+                pathologies.add(new Pathology(id,name,address,phone,hours,website));
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+        return pathologies;
+    }
+    public static ArrayList<Radiology> getRadiologies() throws SQLException{
+        ArrayList<Radiology> radiologies = new ArrayList<>();
+        var sql = "SELECT id,name,address,phone,fax,hours,email,website FROM Radiology";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                String address = resultSet.getString("address");
+                String phone = resultSet.getString("phone");
+                String hours = resultSet.getString("hours");
+                String website = resultSet.getString("website");
+                String fax = resultSet.getString("fax");
+                String email = resultSet.getString("email");
+
+                radiologies.add(new Radiology(id,name,address,phone,fax,hours,email,website));
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+        return radiologies;
+    }
+
+    public static ArrayList<Patient> getPatients() throws SQLException{
+        ArrayList<Patient> patients = new ArrayList<>();
+        var sql = "SELECT id,firstname,middlename,surname,dob,email,street,suburb,state FROM User where role = 'PATIENT'";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                String id = resultSet.getString("id");
+                String firstname = resultSet.getString("firstname");
+                String middlename = resultSet.getString("middlename");
+                String surname = resultSet.getString("surname");
+                String dob = resultSet.getString("dob");
+                String email = resultSet.getString("email");
+                String street = resultSet.getString("street");
+                String suburb = resultSet.getString("suburb");
+                String state = resultSet.getString("state");
+                Patient patient = new Patient(id,firstname,middlename,surname,dob,email,street,suburb,state);
+                patient.setResources(getResources(id));
+                patients.add(patient);
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+        return patients;
+    }
+    public static ArrayList<Resource> getResources(String userID) throws SQLException{
+        ArrayList<Resource> resources = new ArrayList<>();
+        var sql = "SELECT id,name,website FROM Resource where uid = ?";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, userID);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                String website = resultSet.getString("website");
+                resources.add(new Resource(id,name,website));
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+        return resources;
+    }
+
+    /*public static void insertResource(String uid) throws SQLException{
+        String sql = "INSERT INTO Resource (id,uid,name,website) VALUES (?,?,?,?)";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,id);
+            int i = preparedStatement.executeUpdate();
+            if (i == 0){
+                throw new SQLException("The Resource was not inserted.");
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+    }*/
 
     private static void closeDB(PreparedStatement ps, ResultSet rs) {
         try {

@@ -1,9 +1,10 @@
-package appointment;
+package controller;
 /*Author: Bowei SONG*/
 import base.Appointment;
 import database.DatabaseDriver;
 import helper.Helper;
 import util.Constant;
+import util.HintDialog;
 import util.LoadingTask;
 import interfaces.LoadDataTask;
 import javafx.beans.value.ChangeListener;
@@ -22,6 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -31,26 +33,62 @@ public class AppointmentPageController implements Initializable, LoadDataTask {
     @FXML private Label countLB;
     @FXML private ChoiceBox<String> yearCB,monthCB,dayCB;
     @FXML private TextField searchTF;
-    @FXML private ImageView addIV;
     @FXML private TableView<Appointment> appointmentTB;
     @FXML private RadioButton appidRB, userRB;
-    @FXML private AnchorPane loadPane;
+    @FXML private AnchorPane loadPane,detailPane;
     @FXML private ProgressIndicator loadProgressIndicator;
     @FXML private TableColumn<Appointment, String> idTC,userIdTC,doctorIdTC, titleTC, dateTC, durationTC,statusTC;
 
+    @FXML private Label patientIdLB, doctorIdLB,idLB;
+    @FXML private TextField patientTF, doctorTF,titleTF,detailTF,durationTF,reportTF;
+    @FXML private TextField createDateTF, changeDateTF,appDateTF,timeTF,statusTF;
+    @FXML private TextArea noteTA, userNoteTA;
+    @FXML private Button closeBT;
+    @FXML private ImageView deleteIV, reportIV,closeIV;
+
     private ObservableList<Appointment> appointments;
     private FilteredList<Appointment> filteredList;
+    private Appointment appointment;
     private LoadingTask loadTask;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadTask = new LoadingTask(this);
         initUI();
-        //loadData();
-        addIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
-            subController = Helper.openSubWindow(null, (Stage) addIV.getParent().getScene().getWindow(),"","view/AppointmentDetailXML.fxml");
-            ((AppointmentDetailController)subController).open(new Appointment());
+        closeBT.setOnAction((e)->{
+            detailPane.setVisible(false);
+        });
+        closeIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
+            detailPane.setVisible(false);
+        });
+        deleteIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
+            HintDialog hintDialog = new HintDialog((Stage) countLB.getScene().getWindow());
+            Button confirmBt = new Button("YES [DELETE]");
+            confirmBt.setOnAction((e)->{
+                try {
+                    hintDialog.hide();
+                    DatabaseDriver.deleteData("Appointment" , appointment.getId());
+                    appointments.remove(appointment);
+                    detailPane.setVisible(false);
+                    appointment = null;
+                } catch (SQLException throwables) {
+                    Helper.displayHintWindow((Stage) countLB.getScene().getWindow(),"error", "Delete failed",
+                            "Reason: " + throwables.getMessage());
+                }
+            });
+            hintDialog.setOptionButton(new Button[]{confirmBt});
+            hintDialog.buildAndShow("warning", "Delete the Appointment information?","The Appointment information will be deleted. This operation cannot be undone!" +
+                    "\nAre you sure to delete the Appointment?");
         });
 
+        reportIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
+            try {
+                Object subController = Helper.openSubWindow(null, (Stage) countLB.getScene().getWindow(), "", "view/PDFReaderFXML.fxml");
+                ((PDFReaderController)subController).open(appointment);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        });
     }
 
     private void initUI(){
@@ -137,14 +175,35 @@ public class AppointmentPageController implements Initializable, LoadDataTask {
             TableRow<Appointment> row = new TableRow<>();
             row.setOnMouseClicked(mouseEvent->{
                 if (mouseEvent.getClickCount() == 2 && !row.isEmpty()){
-                    Appointment appointment = row.getItem();
-                    subController = Helper.openSubWindow(null, (Stage) searchTF.getScene().getWindow(),"", "view/AppointmentDetailXML.fxml");
-                    ((AppointmentDetailController)subController).open(appointment);
+                    appointment = row.getItem();
+                    displayDetail();
                 }
             });
             return row;
         });
     }
+
+    private void displayDetail(){
+        detailPane.setVisible(true);
+        idLB.setText(appointment.getId());
+        patientIdLB.setText(appointment.getUserID());
+        patientTF.setText(appointment.getUserName());
+        doctorIdLB.setText(appointment.getDoctorID());
+        doctorTF.setText(appointment.getDoctorName());
+        titleTF.setText(appointment.getTitle());
+        appDateTF.setText(appointment.getDate());
+        timeTF.setText(appointment.getTime());
+        durationTF.setText(appointment.getDuration());
+        statusTF.setText(appointment.getStatus());
+        reportTF.textProperty().bind(appointment.reportProperty());
+        detailTF.setText(appointment.getDetail());
+
+        createDateTF.setText(appointment.getCreateDate());
+        changeDateTF.setText(appointment.getChangeDate());
+        noteTA.setText(appointment.getNote());
+        userNoteTA.setText(appointment.getUserNote());
+    }
+
     public void loadData(){
         if (Constant.updateAppointment){
             Constant.updateAppointment = false;

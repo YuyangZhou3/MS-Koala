@@ -107,7 +107,7 @@ public class DoctorPageController implements Initializable, LoadDataTask {
             confirmBt.setOnAction((e)->{
                 try {
                     hintDialog.hide();
-                    DatabaseDriver.deleteDoctor(selectDoctor.getId());
+                    DatabaseDriver.deleteData("Doctor",selectDoctor.getId());
                     doctors.remove(selectDoctor);
                     coverPane.setVisible(true);
                     setEditable(false);
@@ -118,7 +118,7 @@ public class DoctorPageController implements Initializable, LoadDataTask {
             });
             hintDialog.setOptionButton(new Button[]{confirmBt});
             hintDialog.buildAndShow("warning", "Delete the doctor?","The doctor information will be deleted. This operation cannot be undone!" +
-                    "\nAre you sure to delete the report file with the appointment?");
+                    "\nAre you sure to delete the doctor?");
         });
 
         ToggleGroup group = new ToggleGroup();

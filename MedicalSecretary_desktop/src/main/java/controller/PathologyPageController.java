@@ -1,7 +1,6 @@
 package controller;
 
-import base.Doctor;
-import base.Hospital;
+import base.Pathology;
 import database.DatabaseDriver;
 import helper.Helper;
 import interfaces.LoadDataTask;
@@ -25,32 +24,36 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public class HospitalPageController implements Initializable, LoadDataTask {
-
-    @FXML private TextField nameTF, addressTF, emergencyTF, aftPhoneTF;
-    @FXML private TextField phoneTF, faxTF, emailTF, websiteTF;
+public class PathologyPageController implements Initializable, LoadDataTask {
+    @FXML private TextField nameTF, addressTF, phoneTF, websiteTF;
+    @FXML private TextArea hoursTA;
     @FXML private Button backBT;
     @FXML private ImageView deleteIV, closeIV;
     @FXML private Label idLB;
     @FXML private AnchorPane detailPane;
 
-    @FXML private TableView<Hospital> tableView;
-    @FXML private TableColumn<Hospital,String> idTC, nameTC, addressTC, emergencyTC, phoneTC;
-
+    @FXML private TableView<Pathology> tableView;
+    @FXML private TableColumn<Pathology,String> idTC, nameTC, addressTC, hoursTC, phoneTC;
     @FXML private TextField searchTF;
     @FXML private Label countLB;
-
     @FXML private AnchorPane loadPane;
     @FXML private ProgressIndicator loadProgressIndicator;
-
-    private ObservableList<Hospital> hospitals;
+    private ObservableList<Pathology> pathologies;
     private Task<Integer> loadTask;
-    private Hospital hospital;
+    private Pathology pathology = null;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadTask = new LoadingTask(this);
         initTable();
         initEvent();
+    }
+
+    public void loadData(){
+        if (!loadTask.isRunning()) {
+            loadTask = new LoadingTask(this);
+            before();
+            new Thread(loadTask).start();
+        }
     }
 
     private void initTable() {
@@ -63,72 +66,63 @@ public class HospitalPageController implements Initializable, LoadDataTask {
         phoneTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
         addressTC.setCellValueFactory(new PropertyValueFactory<>("address"));
         addressTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
-        emergencyTC.setCellValueFactory(new PropertyValueFactory<>("emergencyDept"));
-        emergencyTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
+        hoursTC.setCellValueFactory(new PropertyValueFactory<>("hours"));
+        hoursTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
 
         tableView.setRowFactory(tb->{
-            TableRow<Hospital> row = new TableRow<>();
+            TableRow<Pathology> row = new TableRow<>();
             row.setOnMouseClicked(mouseEvent->{
                 if (mouseEvent.getClickCount() == 2 && !row.isEmpty()){
-                    hospital = row.getItem();
+                    pathology = row.getItem();
                     displayDetail();
                 }
             });
             return row;
         });
     }
+    private void displayDetail(){
+        detailPane.setVisible(true);
+        idLB.setText("ID: " + pathology.getId());
+        nameTF.setText(pathology.getName());
+        addressTF.setText(pathology.getAddress());
+        phoneTF.setText(pathology.getPhone());
+        websiteTF.setText(pathology.getWebsite());
+        hoursTA.setText(pathology.getHours());
+    }
 
     private void initEvent(){
+        searchTF.textProperty().addListener(((observableValue, oldValue, newValue) -> {
+            dataFilter();
+            countLB.setText(filteredList.size()+"");
+        }));
         backBT.setOnAction((e)->{
             detailPane.setVisible(false);
         });
         closeIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             detailPane.setVisible(false);
         });
-        searchTF.textProperty().addListener(((observableValue, oldValue, newValue) -> {
-            dataFilter();
-            countLB.setText(filteredList.size()+"");
-        }));
         deleteIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             HintDialog hintDialog = new HintDialog((Stage) idLB.getScene().getWindow());
             Button confirmBt = new Button("YES [DELETE]");
             confirmBt.setOnAction((e)->{
                 try {
                     hintDialog.hide();
-                    DatabaseDriver.deleteData("Hospital" , hospital.getId());
-                    hospitals.remove(hospital);
+                    DatabaseDriver.deleteData("Pathology" , pathology.getId());
+                    pathologies.remove(pathology);
                     detailPane.setVisible(false);
-                    hospital = null;
+                    pathology = null;
                 } catch (SQLException throwables) {
                     Helper.displayHintWindow((Stage) idLB.getScene().getWindow(),"error", "Delete failed",
                             "Reason: " + throwables.getMessage());
                 }
             });
             hintDialog.setOptionButton(new Button[]{confirmBt});
-            hintDialog.buildAndShow("warning", "Delete the Hospital information?","The Hospital information will be deleted. This operation cannot be undone!" +
-                    "\nAre you sure to delete the Hospital?");
+            hintDialog.buildAndShow("warning", "Delete the Pathology information?","The Pathology information will be deleted. This operation cannot be undone!" +
+                    "\nAre you sure to delete the Pathology?");
         });
     }
-    private void afterLoad(){
-        countLB.setText(filteredList.size()+"");
-        loadProgressIndicator.progressProperty().unbind();
-        loadPane.setVisible(false);
-    }
 
-    private void displayDetail(){
-        detailPane.setVisible(true);
-        idLB.setText("ID: " + hospital.getId());
-        nameTF.setText(hospital.getName());
-        addressTF.setText(hospital.getAddress());
-        emergencyTF.setText(hospital.getEmergencyDept());
-        aftPhoneTF.setText(hospital.getAftPhone());
-        phoneTF.setText(hospital.getPhone());
-        faxTF.setText(hospital.getFax());
-        emailTF.setText(hospital.getEmail());
-        websiteTF.setText(hospital.getWebsite());
-    }
-
-    private FilteredList<Hospital> filteredList;
+    private FilteredList<Pathology> filteredList;
     private void dataFilter(){
         String searchLine = searchTF.getText().toLowerCase().trim();
         filteredList.setPredicate(a->{
@@ -140,13 +134,10 @@ public class HospitalPageController implements Initializable, LoadDataTask {
             }
         });
     }
-
-    public void loadData(){
-        if (!loadTask.isRunning()) {
-            loadTask = new LoadingTask(this);
-            before();
-            new Thread(loadTask).start();
-        }
+    private void afterLoad(){
+        countLB.setText(filteredList.size()+"");
+        loadProgressIndicator.progressProperty().unbind();
+        loadPane.setVisible(false);
     }
 
     @Override
@@ -154,23 +145,27 @@ public class HospitalPageController implements Initializable, LoadDataTask {
         loadPane.setVisible(true);
         loadProgressIndicator.progressProperty().bind(loadTask.progressProperty());
     }
+
     @Override
-    public void doing() throws Exception{
-        hospitals = FXCollections.observableArrayList(DatabaseDriver.getHospitals());
-        filteredList = new FilteredList<>(hospitals, d -> true);
-        SortedList<Hospital> sortedList = new SortedList<>(filteredList);
+    public void doing() throws Exception {
+        pathologies = FXCollections.observableArrayList(DatabaseDriver.getPathologies());
+        filteredList = new FilteredList<>(pathologies, d -> true);
+        SortedList<Pathology> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(tableView.comparatorProperty());
         tableView.setItems(sortedList);
         dataFilter();
     }
+
     @Override
     public void done() {
         afterLoad();
     }
+
     @Override
     public void failed() {
         afterLoad();
     }
+
     @Override
     public void cancelled() {
         afterLoad();

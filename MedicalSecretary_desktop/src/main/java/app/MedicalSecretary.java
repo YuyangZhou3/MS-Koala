@@ -1,15 +1,15 @@
 package app;
 /*Author: Bowei SONG - 2020*/
+import controller.SettingController;
 import database.DatabaseDriver;
+import helper.Helper;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.application.Preloader;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -19,20 +19,18 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import util.Util;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MedicalSecretary extends Application {
-    public static String ip = "52.63.150.111";
-    public static int port = 11111;
-    public static ArrayList<String> appointmentStatus = new ArrayList<>(Arrays.asList("UNCONFIRMED","CONFIRMED","CANCELLED"));
-
     private Stage loaderStage = null;
+    private Stage mainStage = null;
     @Override
     public void start(Stage primaryStage) throws Exception{
-
+        mainStage = primaryStage;
         initPreLoader();
+        Platform.setImplicitExit(false);
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/MainPageFXML.fxml"));
         primaryStage.setScene(new Scene((Parent) loader.load(), 1210, 660));
         MainPageController mainPageController = loader.getController();
@@ -43,6 +41,7 @@ public class MedicalSecretary extends Application {
                 if(Boolean.TRUE.equals(t1)){
                     Platform.runLater(new Runnable(){
                         public void run(){
+                            setTray();
                             loaderStage.hide();
                             primaryStage.setResizable(false);
                             primaryStage.initStyle(StageStyle.TRANSPARENT);
@@ -55,6 +54,10 @@ public class MedicalSecretary extends Application {
         });
     }
 
+
+    /*
+    * Pre-Loader
+    * */
     private void initPreLoader() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/PreLoaderFXML.fxml"));
         loaderStage = new Stage();
@@ -79,7 +82,10 @@ public class MedicalSecretary extends Application {
             protected  Void call()throws Exception{
                 Util.loadConfigFile();
                 Platform.runLater(()->{ loadString.set("Connecting the server"); });
-                DatabaseDriver.connection();
+                boolean connect = DatabaseDriver.connection();
+                if (!connect){
+                    throw new Exception("1");
+                }
 
                 mainPageController.openUploadFilePage();
                 Platform.runLater(()->{ loadString.set("Initializing Upload File"); });
@@ -92,6 +98,17 @@ public class MedicalSecretary extends Application {
                 mainPageController.openDoctorPage();
                 Platform.runLater(()->{ loadString.set("Loading Doctor data"); });
                 loadProgress.setValue(60);
+                mainPageController.openPathologyPage();
+                Platform.runLater(()->{ loadString.set("Loading Pathology data"); });
+                loadProgress.setValue(70);
+
+                mainPageController.openRadiologyPage();
+                Platform.runLater(()->{ loadString.set("Loading Radiology data"); });
+                loadProgress.setValue(80);
+
+                mainPageController.openUserPage();
+                Platform.runLater(()->{ loadString.set("Loading User data"); });
+                loadProgress.setValue(85);
 
                 mainPageController.openAutoUploadFilePage();
                 Platform.runLater(()->{ loadString.set("Initializing Auto Upload Function");});
@@ -103,12 +120,59 @@ public class MedicalSecretary extends Application {
             }
             @Override
             protected void failed() {
-                System.out.println(getException().fillInStackTrace());
+                if (getException().getMessage().equals("1")){
+                    FXMLLoader loader = new FXMLLoader(DatabaseDriver.class.getClassLoader().getResource("view/SettingFXML.fxml"));
+                    Stage stage = new Stage();
+                    try {
+                        stage.setScene(new Scene((Parent) loader.load(), 631, 194));
+                        SettingController controller = loader.getController();
+                        stage.initOwner(loaderStage);
+                        stage.setResizable(false);
+                        stage.initStyle(StageStyle.TRANSPARENT);
+                        stage.getScene().setFill(Color.TRANSPARENT);
+                        stage.show();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                }else {
+                    Helper.displayHintWindow(loaderStage,"error","Load Failed","Reason: " + getException().getMessage());
+                }
             }
         };
         new Thread(task).start();
     }
+    /*
+        Tray function
+     */
 
+    public void setTray() {
+        if (SystemTray.isSupported()) {
+            SystemTray tray = SystemTray.getSystemTray();
+            Image image = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("images/logo.png"));
+            String text = "Medical Secretary";
+            PopupMenu popMenu = new PopupMenu();
+            MenuItem itmOpen = new MenuItem("Open Dashboard");
+            itmOpen.addActionListener((ActionEvent e) -> {
+                Platform.runLater(() -> {
+                    mainStage.show();
+                });
+            });
+            MenuItem itmExit = new MenuItem("Close Application");
+            itmExit.addActionListener((ActionEvent e) -> {
+                System.exit(1);
+            });
+            popMenu.add(itmOpen);
+            popMenu.add(itmExit);
+
+            TrayIcon trayIcon = new TrayIcon(image, text, popMenu);
+            trayIcon.setImageAutoSize(true);
+            try {
+                tray.add(trayIcon);
+            } catch (AWTException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
   /*  public static void main(String[] args) {
         launch(args);
     }*/

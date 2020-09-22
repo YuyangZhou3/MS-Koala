@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane prefHeight="330.0" prefWidth="584.0" style="-fx-border-color: #bfbfbf; -fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="appointment.PDFReaderController">
+<AnchorPane prefHeight="330.0" prefWidth="584.0" style="-fx-border-color: #bfbfbf; -fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PDFReaderController">
    <children>
       <AnchorPane fx:id="topPane" layoutX="16.0" layoutY="10.0" prefHeight="41.0" prefWidth="562.0" style="-fx-background-color: #249FE4;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <effect>
