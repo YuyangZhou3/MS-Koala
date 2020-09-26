@@ -4,7 +4,7 @@ import controller.AppointmentPageController;
 import controller.*;
 import file.AutoUploadController;
 import file.UploadPageController;
-import helper.Helper;
+import util.Helper;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,10 +22,8 @@ import javafx.stage.Stage;
 import util.Constant;
 import util.HintDialog;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class MainPageController implements Initializable {

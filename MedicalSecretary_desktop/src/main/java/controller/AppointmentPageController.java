@@ -2,7 +2,7 @@ package controller;
 /*Author: Bowei SONG*/
 import base.Appointment;
 import database.DatabaseDriver;
-import helper.Helper;
+import util.Helper;
 import util.Constant;
 import util.HintDialog;
 import util.LoadingTask;

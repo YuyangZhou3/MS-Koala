@@ -3,7 +3,7 @@ package controller;
 import base.Patient;
 import base.Resource;
 import database.DatabaseDriver;
-import helper.Helper;
+import util.Helper;
 import interfaces.LoadDataTask;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

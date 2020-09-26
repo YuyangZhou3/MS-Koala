@@ -2,8 +2,7 @@ package controller;
 
 import base.Doctor;
 import database.DatabaseDriver;
-import helper.Helper;
-import util.Constant;
+import util.Helper;
 import util.HintDialog;
 import util.LoadingTask;
 import interfaces.LoadDataTask;

@@ -1,6 +1,6 @@
 package base;
 
-import helper.Helper;
+import util.Helper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 

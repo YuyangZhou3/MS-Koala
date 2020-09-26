@@ -7,7 +7,7 @@ import file.TCPClient;
 import util.Constant;
 import util.HintDialog;
 import interfaces.UploadFile;
-import helper.Helper;
+import util.Helper;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -24,7 +24,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import app.MedicalSecretary;
 
 import java.io.*;
 import java.net.HttpURLConnection;

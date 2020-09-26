@@ -2,7 +2,7 @@ package controller;
 
 import base.Pathology;
 import database.DatabaseDriver;
-import helper.Helper;
+import util.Helper;
 import interfaces.LoadDataTask;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

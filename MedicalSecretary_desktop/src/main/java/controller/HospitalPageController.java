@@ -1,9 +1,8 @@
 package controller;
 
-import base.Doctor;
 import base.Hospital;
 import database.DatabaseDriver;
-import helper.Helper;
+import util.Helper;
 import interfaces.LoadDataTask;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
