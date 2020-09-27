@@ -2,7 +2,7 @@ package app;
 /*Author: Bowei SONG - 2020*/
 import controller.SettingController;
 import database.DatabaseDriver;
-import helper.Helper;
+import util.Helper;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.*;
