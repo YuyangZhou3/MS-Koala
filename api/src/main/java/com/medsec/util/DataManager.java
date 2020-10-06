@@ -192,8 +192,8 @@ public class DataManager {
         String id = (String) rsource.get("Id");
         String uid = (String) rsource.get("Uid");
         String name = (String) rsource.get("Name");
-        String website = (String) rsource.get("Website");
-        Resource resource = new Resource().id(id).uid(uid).name(name).website(website);
+        String res = (String) rsource.get("Resource");
+        Resource resource = new Resource().id(id).uid(uid).name(name).resource(res);
         return resource;
     }
 }
