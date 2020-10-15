@@ -34,7 +34,7 @@
             <DropShadow blurType="ONE_PASS_BOX" color="#4d4646" />
          </effect>
       </AnchorPane>
-      <Button fx:id="doneBT" layoutX="173.0" layoutY="212.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="149.0" style="-fx-background-color: #249FE4; -fx-background-radius: 20;" text="COLSE" textFill="WHITE">
+      <Button fx:id="doneBT" layoutX="173.0" layoutY="212.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="149.0" style="-fx-background-color: #249FE4; -fx-background-radius: 20;" text="CLOSE" textFill="WHITE">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
