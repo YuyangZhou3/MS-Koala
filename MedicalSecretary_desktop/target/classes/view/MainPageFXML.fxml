@@ -45,6 +45,14 @@
                   </Label>
                </children>
             </HBox>
+            <Button fx:id="refreshBT" layoutX="1102.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" style="-fx-background-color: #249FE4; -fx-border-color: #249FE4; -fx-background-radius: 20; -fx-border-radius: 20;" text="REFRESH" textFill="WHITE">
+               <font>
+                  <Font name="Microsoft YaHei Bold" size="11.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
          </children>
          <effect>
             <DropShadow blurType="ONE_PASS_BOX" color="#7c7878" />

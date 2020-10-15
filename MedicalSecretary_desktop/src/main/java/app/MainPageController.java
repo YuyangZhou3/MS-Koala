@@ -50,12 +50,18 @@ public class MainPageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         subPageNodes = new Node[8];
         subControllers = new Object[8];
+
         clickFileIV.setVisible(true);
-        ipLB.setText("Server IP: "+Constant.ip);
-        portLB.setText("Port: "+Constant.port);
-        ipTF.setText(Constant.ip); portTF.setText(Constant.port+"");
+
         initUI();
         initEvent();
+    }
+
+    public void setIPAndPost(){
+        ipLB.setText("Server IP: "+Constant.ip);
+        portLB.setText("Port: "+Constant.port);
+        ipTF.setText(Constant.ip);
+        portTF.setText(Constant.port+"");
     }
 
     public void initUI(){
