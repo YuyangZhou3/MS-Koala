@@ -83,7 +83,7 @@ public class MainPageController implements Initializable {
             hintDialog.setOptionButton(new Button[]{exitBt, minBt});
             hintDialog.buildAndShow("Warning", "Close the Application",
                     "[EXIT] The application will be closed, the function of auto upload will be terminated.\n" +
-                            "[MINIMIZE] The application will be hidden. Reopen via tray");
+                            "[MINIMIZE] The application will be hidden. Reopen via tray\n[CLOSE] Close the hint window");
         });
         minimizeIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             primaryStage.hide();
