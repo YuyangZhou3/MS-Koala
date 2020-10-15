@@ -205,12 +205,11 @@ public class AppointmentPageController implements Initializable, LoadDataTask {
     }
 
     public void loadData(){
-        if (Constant.updateAppointment){
-            Constant.updateAppointment = false;
-            if (!loadTask.isRunning()) {
-                loadTask.start();
-            }
+
+        if (!loadTask.isRunning()) {
+            loadTask.start();
         }
+
     }
     public void loadDataInner(){
         if (!loadTask.isRunning()) {
