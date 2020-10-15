@@ -282,11 +282,11 @@ public class JSONWriter {
 
         //Sending file name and file size to the server
         DataOutputStream dos = new DataOutputStream(os);
-//          dos.writeUTF(myFile.getName());
+//        dos.writeUTF(myFile.getName());
 //          dos.writeLong(mybytearray.length);
         dos.write(mybytearray, 0, mybytearray.length);
         dos.flush();
 
-        //dos.close();
+//        dos.close();
     }
 }

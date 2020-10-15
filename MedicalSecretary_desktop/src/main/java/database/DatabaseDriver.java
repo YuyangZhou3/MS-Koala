@@ -302,7 +302,7 @@ public class DatabaseDriver {
     }
     public static ArrayList<Resource> getResources(String userID) throws SQLException{
         ArrayList<Resource> resources = new ArrayList<>();
-        var sql = "SELECT id,name,website FROM Resource where uid = ?";
+        var sql = "SELECT id,name,resource FROM Resource where uid = ?";
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
@@ -312,8 +312,8 @@ public class DatabaseDriver {
             while (resultSet.next()){
                 String id = resultSet.getString("id");
                 String name = resultSet.getString("name");
-                String website = resultSet.getString("website");
-                resources.add(new Resource(id,name,website));
+                String resource = resultSet.getString("resource");
+                resources.add(new Resource(id,name,resource));
             }
         }finally {
             closeDB(preparedStatement, resultSet);
