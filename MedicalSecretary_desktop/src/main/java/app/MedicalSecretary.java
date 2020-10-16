@@ -80,7 +80,9 @@ public class MedicalSecretary extends Application {
     private void longStart(MainPageController mainPageController){
         Task task=new Task<Void>(){
             protected  Void call()throws Exception{
+                //load config file
                 Util.loadConfigFile();
+                mainPageController.setIPAndPost();
                 Platform.runLater(()->{ loadString.set("Connecting the server"); });
                 boolean connect = DatabaseDriver.connection();
                 if (!connect){

@@ -34,5 +34,6 @@ public class LoadingTask extends Task<Integer> {
     @Override
     protected void failed() {
         task.failed();
+        getException().printStackTrace();
     }
 }

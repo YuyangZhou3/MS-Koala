@@ -177,6 +177,9 @@ public class PDFReaderController implements Initializable, UploadFile {
         updateBT.setOnAction((e)->{
             try {
                 if (pdfFile != null) {
+                    File parentFile = new File("temp");
+                    if (!parentFile.exists()) parentFile.mkdir();
+
                     pdfFile = copy(pdfFile.getAbsolutePath(), "temp/File-report-"+appointment.getId()+".pdf", 8192);
                     loadPane.setVisible(true);
                     TCPClient tcpClient = new TCPClient(this);
@@ -184,7 +187,7 @@ public class PDFReaderController implements Initializable, UploadFile {
                     Thread tcpThread = new Thread(tcpClient);
                     tcpThread.start();
                 }
-            } catch (IOException e1) {
+            } catch (Exception e1) {
                 Helper.displayHintWindow(stage, "Error", "Upload Fail" , "Reason: " + e1.getMessage());
                 e1.printStackTrace();
             }
@@ -269,6 +272,8 @@ public class PDFReaderController implements Initializable, UploadFile {
     public void succeeded() {
         appointment.setReport(pdfFile.getName());
         Helper.clearTempFiles();
+        loadPane.setVisible(false);
+        loadPD.progressProperty().unbind();
     }
 
     @Override
@@ -286,7 +291,7 @@ public class PDFReaderController implements Initializable, UploadFile {
 
     @Override
     public void displayResultWindow(String type, String title, String message) {
-        HintWindowController controller = (HintWindowController) Helper.openSubWindow(null, (Stage) fileBox.getScene().getWindow() , "", "../file/HintWindowFXML.fxml");
+        HintWindowController controller = (HintWindowController) Helper.openSubWindow(null, (Stage) fileBox.getScene().getWindow() , "", "view/HintWindowFXML.fxml");
         controller.build( type, title , message);
     }
 

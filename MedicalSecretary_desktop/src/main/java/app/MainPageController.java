@@ -37,9 +37,11 @@ public class MainPageController implements Initializable {
     @FXML private TextField ipTF, portTF;
     @FXML private Button changeBT, backBT;
     @FXML private Label ipLB, portLB;
+    @FXML private Button refreshBT;
 
     private Node[] subPageNodes;
     private Object[] subControllers;
+    private int pageIndex = 0;
     private Object subController = null;
     private double xOffset = 0;
     private double yOffset = 0;
@@ -48,12 +50,18 @@ public class MainPageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         subPageNodes = new Node[8];
         subControllers = new Object[8];
+
         clickFileIV.setVisible(true);
-        ipLB.setText("Server IP: "+Constant.ip);
-        portLB.setText("Port: "+Constant.port);
-        ipTF.setText(Constant.ip); portTF.setText(Constant.port+"");
+
         initUI();
         initEvent();
+    }
+
+    public void setIPAndPost(){
+        ipLB.setText("Server IP: "+Constant.ip);
+        portLB.setText("Port: "+Constant.port);
+        ipTF.setText(Constant.ip);
+        portTF.setText(Constant.port+"");
     }
 
     public void initUI(){
@@ -83,10 +91,32 @@ public class MainPageController implements Initializable {
             hintDialog.setOptionButton(new Button[]{exitBt, minBt});
             hintDialog.buildAndShow("Warning", "Close the Application",
                     "[EXIT] The application will be closed, the function of auto upload will be terminated.\n" +
-                            "[MINIMIZE] The application will be hidden. Reopen via tray");
+                            "[MINIMIZE] The application will be hidden. Reopen via tray\n[CLOSE] Close the hint window");
         });
         minimizeIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             primaryStage.hide();
+        });
+        refreshBT.setOnAction(e->{
+            switch (pageIndex){
+                case 1:
+                    ((AppointmentPageController)subController).loadData();
+                    break;
+                case 2:
+                    ((DoctorPageController)subController).loadData();
+                    break;
+                case 3:
+                    ((HospitalPageController)subController).loadData();
+                    break;
+                case 4:
+                    ((PathologyPageController)subController).loadData();
+                    break;
+                case 5:
+                    ((RadiologyPageController)subController).loadData();
+                    break;
+                case 6:
+                    ((UserPageController)subController).loadData();
+                    break;
+            }
         });
 
         fileIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
@@ -163,34 +193,42 @@ public class MainPageController implements Initializable {
     public void openUploadFilePage(){
         loadContentPage("view/UploadPageFXML.fxml", 7);
         ((UploadPageController)subController).setParentController(getThis());
+        pageIndex = 7;
     }
     public void openAutoUploadFilePage(){
         loadContentPage("view/AutoUploadFXML.fxml", 0);
         ((AutoUploadController)subController).setParentController(getThis());
+        pageIndex = 0;
     }
     public void openAppointmentPage(){
         loadContentPage("view/AppointmentPageFXML.fxml",1);
         ((AppointmentPageController)subController).loadData();
+        pageIndex = 1;
     }
     public void openDoctorPage(){
         loadContentPage("view/DoctorPageFXML.fxml",2);
         ((DoctorPageController)subController).loadData();
+        pageIndex = 2;
     }
     public void openHospitalPage(){
         loadContentPage("view/HospitalPageFXML.fxml",3);
         ((HospitalPageController)subController).loadData();
+        pageIndex = 3;
     }
     public void openPathologyPage(){
         loadContentPage("view/PathologyPageFXML.fxml",4);
         ((PathologyPageController)subController).loadData();
+        pageIndex = 4;
     }
     public void openRadiologyPage(){
         loadContentPage("view/RadiologyPageFXML.fxml",5);
         ((RadiologyPageController)subController).loadData();
+        pageIndex = 5;
     }
     public void openUserPage(){
         loadContentPage("view/UserPageFXML.fxml",6);
         ((UserPageController)subController).loadData();
+        pageIndex = 6;
     }
 
 
