@@ -144,7 +144,7 @@
             <Font name="Microsoft YaHei Bold" size="13.0" />
          </font>
       </Label>
-      <Label layoutX="456.0" layoutY="27.0" text="-- Patient / User --" textFill="#249fe4">
+      <Label layoutX="456.0" layoutY="27.0" text=" Patient / Resources " textFill="#249fe4">
          <font>
             <Font name="Microsoft YaHei Bold" size="18.0" />
          </font>
