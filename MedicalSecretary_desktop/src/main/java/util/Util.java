@@ -73,4 +73,27 @@ public class Util {
             }
         }
     }
+
+    //copy file to root
+    public static File copy(String source, String dest, int bufferSize) throws IOException {
+        InputStream in = null;
+        OutputStream out = null;
+        File outFile = new File(dest);
+        try {
+            in = new FileInputStream(new File(source));
+            out = new FileOutputStream(outFile);
+
+            byte[] buffer = new byte[bufferSize];
+            int len;
+
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer, 0, len);
+            }
+        }finally {
+            in.close();
+            out.close();
+            Runtime.getRuntime().gc();
+            return outFile;
+        }
+    }
 }

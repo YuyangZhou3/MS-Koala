@@ -3,6 +3,8 @@ package controller;
 import base.Patient;
 import base.Resource;
 import database.DatabaseDriver;
+import file.TCPClient;
+import interfaces.UploadFile;
 import util.Helper;
 import interfaces.LoadDataTask;
 import javafx.beans.value.ChangeListener;
@@ -23,13 +25,16 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import util.HintDialog;
 import util.LoadingTask;
+import util.Util;
 
-import java.io.File;
+import java.io.*;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
-public class UserPageController implements Initializable, LoadDataTask {
+public class UserPageController implements Initializable, LoadDataTask , UploadFile {
 
     @FXML private TextField firstNameTF,midNameTF,surnameTF;
     @FXML private TextField idTF, dobTF, emailTF, streetTF, suburbTF, stateTF;
@@ -39,7 +44,7 @@ public class UserPageController implements Initializable, LoadDataTask {
 
     @FXML private ImageView resourceIV,closeResourceIV,deleteResourceIV;
     @FXML private TableView<Resource> resourceTableView;
-    @FXML private TableColumn<Resource, String> resourceIDTC, resourceNameTC, resourceTC;
+    @FXML private TableColumn<Resource, String> resourceIDTC, resourceNameTC, resourceTC,resourceTypeTC;
     @FXML private TextField resourceNameTF, resourceTF;
     @FXML private RadioButton websiteRB, pdfRB;
     @FXML private Button addResourceBT,selectFileBT;
@@ -81,6 +86,8 @@ public class UserPageController implements Initializable, LoadDataTask {
         dobTC.setCellValueFactory(new PropertyValueFactory<>("dob"));
         dobTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
         stateTC.setCellValueFactory(new PropertyValueFactory<>("state"));
+        stateTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
+        resourceTypeTC.setCellValueFactory(new PropertyValueFactory<>("type"));
         stateTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
 
         tableView.setRowFactory(tb->{
@@ -133,6 +140,7 @@ public class UserPageController implements Initializable, LoadDataTask {
                         resourceLB.setText("Resource Filename");
                         resourceTF.setEditable(false);
                     }
+                    resourceTF.setText("");
                 }
             }
         });
@@ -166,17 +174,30 @@ public class UserPageController implements Initializable, LoadDataTask {
                 if (name == null || name.isEmpty()){
                     throw new Exception("Resource Name must not be Empty");
                 }
+                String website = resourceTF.getText().trim();
+                if(website.isEmpty()){
+                    throw new Exception("Resource must not be Empty");
+                }
                 if (websiteRB.isSelected()){
-                    String website = resourceTF.getText().trim();
-                    resourceTF.setText("");
+                    Resource resource = DatabaseDriver.addResource(patient.getId(), "Website", name, website);
+                    resources.add(resource);
+                    resourceTF.setText("");resourceNameTF.setText("");
                 }
                 else {
-                    resourceTF.setText("");
-                    pdfFile = null;
+                    if (name.contains("/")||name.contains("？")||name.contains("\\")||name.contains("<")
+                    || name.contains(":")||name.contains("*")||name.contains("\"")||name.contains(">")||name.contains("|")){
+                        throw new Exception("Resource name cannot contain '/ \\ ? * : < > |'");
+                    }
+                    String filename = name + "-"+ patient.getId()+".pdf";
+                    pdfFile = Util.copy(pdfFile.getAbsolutePath(), "temp/"+filename, 2048);
+
+                    loadPane.setVisible(true);
+                    TCPClient tcpClient = new TCPClient(this);
+                    loadProgressIndicator.progressProperty().bind(tcpClient.progressProperty());
+                    Thread tcpThread = new Thread(tcpClient);
+                    tcpThread.start();
                 }
                 resourceNameTF.setText("");
-                Helper.displayHintWindow((Stage) countLB.getScene().getWindow(),"error","ADD Failed",
-                        "Reason: The Function is a test version, cannot add new resource for the user now");
             }catch (Exception exception){
                 Helper.displayHintWindow((Stage) countLB.getScene().getWindow(),"error","ADD Failed",
                         "Reason: " + exception.getMessage());
@@ -278,5 +299,44 @@ public class UserPageController implements Initializable, LoadDataTask {
     @Override
     public void cancelled() {
         afterLoad();
+    }
+
+
+    @Override
+    public List<File> getFileList() {
+        List<File> files = new ArrayList<>();
+        if (pdfFile!= null) files.add(pdfFile);
+        return files;
+    }
+
+    @Override
+    public void succeeded() {
+        try {
+            patient.setResources(DatabaseDriver.getResources(patient.getId()));
+            resources = FXCollections.observableArrayList(patient.getResources());
+            resourceTableView.setItems(resources);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        pdfFile = null;
+        loadPane.setVisible(false);
+        loadProgressIndicator.progressProperty().unbind();
+    }
+
+    @Override
+    public void cancel() {
+        loadPane.setVisible(false);
+        loadProgressIndicator.progressProperty().unbind();
+    }
+
+    @Override
+    public void fail() {
+        loadPane.setVisible(false);
+        loadProgressIndicator.progressProperty().unbind();
+    }
+
+    @Override
+    public void displayResultWindow(String type, String title, String message) {
+        Helper.displayHintWindow((Stage) countLB.getScene().getWindow(),type, title, message);
     }
 }
