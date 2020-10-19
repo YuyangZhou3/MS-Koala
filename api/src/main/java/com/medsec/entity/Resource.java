@@ -4,7 +4,7 @@ public class Resource {
     private String id;
     private String uid;
     private String name;
-    private String website;
+    private String resource;
 
     public String getId() {
         return id;
@@ -30,12 +30,12 @@ public class Resource {
         this.name = name;
     }
 
-    public String getWebsite() {
-        return website;
+    public String getResource() {
+        return resource;
     }
 
-    public void setWebsite(String website) {
-        this.website = website;
+    public void setResource(String resource) {
+        this.resource = resource;
     }
 
     public Resource id(final String id) {
@@ -53,8 +53,8 @@ public class Resource {
         return this;
     }
 
-    public Resource website(final String website) {
-        this.website = website;
+    public Resource resource(final String resource) {
+        this.resource = resource;
         return this;
     }
 }

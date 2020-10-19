@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Constant {
-    public static String ip = "52.63.150.111";
+    public static String ip = "54.66.34.176";
     public static int port = 11111;
 
     public static String AUTO_PATH = "";

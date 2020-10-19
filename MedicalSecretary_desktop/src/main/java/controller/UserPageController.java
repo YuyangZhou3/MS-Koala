@@ -269,7 +269,7 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
         });
     }
 
-    private FilteredList<Patient> filteredList;
+    private FilteredList<Patient> filteredList=null;
     private void dataFilter(){
         String searchLine = searchTF.getText().toLowerCase().trim();
         filteredList.setPredicate(a->{
@@ -282,7 +282,8 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
         });
     }
     private void afterLoad(){
-        countLB.setText(filteredList.size()+"");
+        if (filteredList!=null)
+            countLB.setText(filteredList.size()+"");
         loadProgressIndicator.progressProperty().unbind();
         loadPane.setVisible(false);
     }

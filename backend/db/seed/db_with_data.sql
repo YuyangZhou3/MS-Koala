@@ -138,16 +138,16 @@ INSERT INTO `Radiology` (`id`, `name`, `address`, `phone`, `fax`, `hours`, `emai
 
 DROP TABLE IF EXISTS `Resource`;
 CREATE TABLE `Resource` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
-  `website` varchar(255) DEFAULT NULL,
+  `resource` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`),
   CONSTRAINT `Resource_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `User` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `Resource` (`id`, `uid`, `name`, `website`) VALUES
+INSERT INTO `Resource` (`id`, `uid`, `name`, `resource`) VALUES
 (1,	1,	'Download Information',	'https://www.google.com');
 
 DROP TABLE IF EXISTS `User`;

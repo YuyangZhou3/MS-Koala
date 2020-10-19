@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.security.KeyStore;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * TCPServer handles JSON GENIE Data sent from the script
@@ -283,7 +284,61 @@ class TCPServerProcess implements Runnable{
         return false;
     }
 
-    public boolean resourceHandler(JSONObject rsource) {
+    public boolean resourceHandler(JSONObject rsource) throws IOException {
+
+        if(rsource.containsKey("FileName")){			// if it contains FileName which means it is a pdf file
+            System.out.println("File type: pdf");
+            int bytesRead = 0;
+            int current = 0;
+            InputStream in = null;
+
+            // file path configuration
+            String resoucePath = TCPServer.class.getResource("/").getPath();
+            String webappsDir = (new File(resoucePath,"../../")).getCanonicalPath();
+            String fileName = (String)rsource.get("FileName");
+            String userId = fileName.substring(fileName.lastIndexOf("-") + 1,
+                    fileName.lastIndexOf(".")).trim();
+            String eachFilePath = "/resource/" + userId + "/" + fileName;           // under the `resource` folder
+            String filePath = webappsDir + eachFilePath;
+            System.out.println(eachFilePath);
+            System.out.println(filePath);
+
+            try {
+                in = connectionSocket.getInputStream();
+                File newFile = new File(filePath);
+                if (!newFile.exists()){
+                    newFile.getParentFile().getParentFile().mkdir();
+                    newFile.getParentFile().mkdir();
+                    newFile.createNewFile();
+                }
+                DataInputStream clientData = new DataInputStream(in);
+                OutputStream output = new FileOutputStream(filePath);
+
+                long size = (long)rsource.get("FileSize");
+                byte[] buffer = new byte[1024];
+
+                while (size > 0 && (bytesRead = clientData.read(buffer, 0, (int)Math.min(buffer.length, size))) != -1)
+                {
+                    output.write(buffer, 0, bytesRead);
+                    size -= bytesRead;
+                }
+                output.flush();
+                output.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String name = fileName.split("-")[1];
+
+            // replace rsource to a new JSONObject
+            Map<String, String> resourceMap = new HashMap<>();
+            resourceMap.put("Uid", userId);
+            resourceMap.put("Resource", eachFilePath);
+            resourceMap.put("Name", name);
+
+            rsource = new JSONObject(resourceMap);
+            System.out.println(rsource.toJSONString());
+        }
+
         Database db = new Database();
         String id = (String) rsource.get("Id");
         if (!isResourceExist(id)) {
@@ -303,13 +358,11 @@ class TCPServerProcess implements Runnable{
         int current = 0;
         InputStream in = null;
 
-        String resoucePath=TCPServer.class.getResource("/").getPath();
-        String webappsDir=(new File(resoucePath,"../../")).getCanonicalPath();
-//        String path = TCPServer.class.getResource("\\").getPath();
+        String resoucePath = TCPServer.class.getResource("/").getPath();
+        String webappsDir = (new File(resoucePath,"../../")).getCanonicalPath();
         String fileName = (String)file.get("FileName");
         String apptid = fileName.substring(fileName.lastIndexOf("-") + 1,
                 fileName.lastIndexOf(".")).trim();
-//        String eachFilePath = "\\result\\" + apptid + "\\" + fileName;
         String eachFilePath = "/result/" + apptid + "/" + fileName;
         String filePath = webappsDir + eachFilePath;
         System.out.println(eachFilePath);
@@ -332,7 +385,6 @@ class TCPServerProcess implements Runnable{
 
             while (size > 0 && (bytesRead = clientData.read(buffer, 0, (int)Math.min(buffer.length, size))) != -1)
             {
-
                 output.write(buffer, 0, bytesRead);
                 size -= bytesRead;
             }
@@ -353,9 +405,7 @@ class TCPServerProcess implements Runnable{
             log.info("update existed file");
             db.updateFile(appointmentFile);
         }
-
         return false;
-
     }
 
     // Justify whether two Apponitments are identical
