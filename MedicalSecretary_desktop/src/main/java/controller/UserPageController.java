@@ -46,7 +46,7 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
     @FXML private TableView<Resource> resourceTableView;
     @FXML private TableColumn<Resource, String> resourceIDTC, resourceNameTC, resourceTC,resourceTypeTC;
     @FXML private TextField resourceNameTF, resourceTF;
-    @FXML private RadioButton websiteRB, pdfRB;
+    @FXML private RadioButton websiteRB, pdfRB,messageRB;
     @FXML private Button addResourceBT,selectFileBT;
     @FXML private Label resourceLB;
     private File pdfFile = null;
@@ -87,8 +87,7 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
         dobTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
         stateTC.setCellValueFactory(new PropertyValueFactory<>("state"));
         stateTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
-        resourceTypeTC.setCellValueFactory(new PropertyValueFactory<>("type"));
-        stateTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
+
 
         tableView.setRowFactory(tb->{
             TableRow<Patient> row = new TableRow<>();
@@ -125,9 +124,13 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
         resourceNameTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
         resourceTC.setCellValueFactory(new PropertyValueFactory<>("resource"));
         resourceTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
+        resourceTypeTC.setCellValueFactory(new PropertyValueFactory<>("type"));
+        resourceTypeTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
+
         ToggleGroup group = new ToggleGroup();
         websiteRB.setToggleGroup(group);
         pdfRB.setToggleGroup(group);pdfRB.setSelected(true);
+        messageRB.setToggleGroup(group);
         group.selectedToggleProperty().addListener( new ChangeListener<Toggle>() {
             public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle) {
                 if (group.getSelectedToggle() != null) {
@@ -135,10 +138,14 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
                         selectFileBT.setVisible(false);
                         resourceLB.setText("Resource Website");
                         resourceTF.setEditable(true);
-                    }else {
+                    }else if (pdfRB.isSelected()){
                         selectFileBT.setVisible(true);
                         resourceLB.setText("Resource Filename");
                         resourceTF.setEditable(false);
+                    }else {
+                        selectFileBT.setVisible(false);
+                        resourceLB.setText("Resource Message");
+                        resourceTF.setEditable(true);
                     }
                     resourceTF.setText("");
                 }
@@ -179,16 +186,21 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
                     throw new Exception("Resource must not be Empty");
                 }
                 if (websiteRB.isSelected()){
-                    Resource resource = DatabaseDriver.addResource(patient.getId(), "Website", name, website);
+                    Resource resource = DatabaseDriver.addResource(patient.getId(), "website", name, website);
                     resources.add(resource);
-                    resourceTF.setText("");resourceNameTF.setText("");
+                }else if(messageRB.isSelected()){
+                    Resource resource = DatabaseDriver.addResource(patient.getId(), "message", name, website);
+                    resources.add(resource);
                 }
-                else {
+                else if(pdfRB.isSelected()){
                     if (name.contains("/")||name.contains("？")||name.contains("\\")||name.contains("<")
                     || name.contains(":")||name.contains("*")||name.contains("\"")||name.contains(">")||name.contains("|")){
                         throw new Exception("Resource name cannot contain '/ \\ ? * : < > |'");
                     }
-                    String filename = name + "-"+ patient.getId()+".pdf";
+                    String filename = "Resource-"+name + "-"+ patient.getId()+".pdf";
+                    if (!new File("temp").exists()){
+                        new File("temp").mkdir();
+                    }
                     pdfFile = Util.copy(pdfFile.getAbsolutePath(), "temp/"+filename, 2048);
 
                     loadPane.setVisible(true);
@@ -198,7 +210,9 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
                     tcpThread.start();
                 }
                 resourceNameTF.setText("");
+                resourceTF.setText("");
             }catch (Exception exception){
+                exception.printStackTrace();
                 Helper.displayHintWindow((Stage) countLB.getScene().getWindow(),"error","ADD Failed",
                         "Reason: " + exception.getMessage());
             }
@@ -247,6 +261,8 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
         });
         resourceIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             resourcePane.setVisible(!resourcePane.isVisible());
+            resourceNameTF.setText("");
+            resourceTF.setText("");
         });
         closeResourceIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             resourcePane.setVisible(false);
@@ -319,6 +335,7 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
             throwables.printStackTrace();
         }
         pdfFile = null;
+        resourceNameTF.setText("");
         loadPane.setVisible(false);
         loadProgressIndicator.progressProperty().unbind();
     }
