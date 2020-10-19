@@ -3,6 +3,8 @@ package controller;
 import base.Patient;
 import base.Resource;
 import database.DatabaseDriver;
+import file.TCPClient;
+import interfaces.UploadFile;
 import util.Helper;
 import interfaces.LoadDataTask;
 import javafx.beans.value.ChangeListener;
@@ -23,13 +25,16 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import util.HintDialog;
 import util.LoadingTask;
+import util.Util;
 
-import java.io.File;
+import java.io.*;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
-public class UserPageController implements Initializable, LoadDataTask {
+public class UserPageController implements Initializable, LoadDataTask , UploadFile {
 
     @FXML private TextField firstNameTF,midNameTF,surnameTF;
     @FXML private TextField idTF, dobTF, emailTF, streetTF, suburbTF, stateTF;
@@ -39,9 +44,9 @@ public class UserPageController implements Initializable, LoadDataTask {
 
     @FXML private ImageView resourceIV,closeResourceIV,deleteResourceIV;
     @FXML private TableView<Resource> resourceTableView;
-    @FXML private TableColumn<Resource, String> resourceIDTC, resourceNameTC, resourceTC;
+    @FXML private TableColumn<Resource, String> resourceIDTC, resourceNameTC, resourceTC,resourceTypeTC;
     @FXML private TextField resourceNameTF, resourceTF;
-    @FXML private RadioButton websiteRB, pdfRB;
+    @FXML private RadioButton websiteRB, pdfRB,messageRB;
     @FXML private Button addResourceBT,selectFileBT;
     @FXML private Label resourceLB;
     private File pdfFile = null;
@@ -83,6 +88,7 @@ public class UserPageController implements Initializable, LoadDataTask {
         stateTC.setCellValueFactory(new PropertyValueFactory<>("state"));
         stateTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
 
+
         tableView.setRowFactory(tb->{
             TableRow<Patient> row = new TableRow<>();
             row.setOnMouseClicked(mouseEvent->{
@@ -118,9 +124,13 @@ public class UserPageController implements Initializable, LoadDataTask {
         resourceNameTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
         resourceTC.setCellValueFactory(new PropertyValueFactory<>("resource"));
         resourceTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
+        resourceTypeTC.setCellValueFactory(new PropertyValueFactory<>("type"));
+        resourceTypeTC.setStyle("-fx-alignment: center;-fx-font-family: 'Microsoft YaHei UI'");
+
         ToggleGroup group = new ToggleGroup();
         websiteRB.setToggleGroup(group);
         pdfRB.setToggleGroup(group);pdfRB.setSelected(true);
+        messageRB.setToggleGroup(group);
         group.selectedToggleProperty().addListener( new ChangeListener<Toggle>() {
             public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle) {
                 if (group.getSelectedToggle() != null) {
@@ -128,11 +138,16 @@ public class UserPageController implements Initializable, LoadDataTask {
                         selectFileBT.setVisible(false);
                         resourceLB.setText("Resource Website");
                         resourceTF.setEditable(true);
-                    }else {
+                    }else if (pdfRB.isSelected()){
                         selectFileBT.setVisible(true);
                         resourceLB.setText("Resource Filename");
                         resourceTF.setEditable(false);
+                    }else {
+                        selectFileBT.setVisible(false);
+                        resourceLB.setText("Resource Message");
+                        resourceTF.setEditable(true);
                     }
+                    resourceTF.setText("");
                 }
             }
         });
@@ -166,18 +181,38 @@ public class UserPageController implements Initializable, LoadDataTask {
                 if (name == null || name.isEmpty()){
                     throw new Exception("Resource Name must not be Empty");
                 }
-                if (websiteRB.isSelected()){
-                    String website = resourceTF.getText().trim();
-                    resourceTF.setText("");
+                String website = resourceTF.getText().trim();
+                if(website.isEmpty()){
+                    throw new Exception("Resource must not be Empty");
                 }
-                else {
-                    resourceTF.setText("");
-                    pdfFile = null;
+                if (websiteRB.isSelected()){
+                    Resource resource = DatabaseDriver.addResource(patient.getId(), "website", name, website);
+                    resources.add(resource);
+                }else if(messageRB.isSelected()){
+                    Resource resource = DatabaseDriver.addResource(patient.getId(), "message", name, website);
+                    resources.add(resource);
+                }
+                else if(pdfRB.isSelected()){
+                    if (name.contains("/")||name.contains("？")||name.contains("\\")||name.contains("<")
+                    || name.contains(":")||name.contains("*")||name.contains("\"")||name.contains(">")||name.contains("|")){
+                        throw new Exception("Resource name cannot contain '/ \\ ? * : < > |'");
+                    }
+                    String filename = "Resource-"+name + "-"+ patient.getId()+".pdf";
+                    if (!new File("temp").exists()){
+                        new File("temp").mkdir();
+                    }
+                    pdfFile = Util.copy(pdfFile.getAbsolutePath(), "temp/"+filename, 2048);
+
+                    loadPane.setVisible(true);
+                    TCPClient tcpClient = new TCPClient(this);
+                    loadProgressIndicator.progressProperty().bind(tcpClient.progressProperty());
+                    Thread tcpThread = new Thread(tcpClient);
+                    tcpThread.start();
                 }
                 resourceNameTF.setText("");
-                Helper.displayHintWindow((Stage) countLB.getScene().getWindow(),"error","ADD Failed",
-                        "Reason: The Function is a test version, cannot add new resource for the user now");
+                resourceTF.setText("");
             }catch (Exception exception){
+                exception.printStackTrace();
                 Helper.displayHintWindow((Stage) countLB.getScene().getWindow(),"error","ADD Failed",
                         "Reason: " + exception.getMessage());
             }
@@ -226,13 +261,15 @@ public class UserPageController implements Initializable, LoadDataTask {
         });
         resourceIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             resourcePane.setVisible(!resourcePane.isVisible());
+            resourceNameTF.setText("");
+            resourceTF.setText("");
         });
         closeResourceIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
             resourcePane.setVisible(false);
         });
     }
 
-    private FilteredList<Patient> filteredList;
+    private FilteredList<Patient> filteredList=null;
     private void dataFilter(){
         String searchLine = searchTF.getText().toLowerCase().trim();
         filteredList.setPredicate(a->{
@@ -245,7 +282,8 @@ public class UserPageController implements Initializable, LoadDataTask {
         });
     }
     private void afterLoad(){
-        countLB.setText(filteredList.size()+"");
+        if (filteredList!=null)
+            countLB.setText(filteredList.size()+"");
         loadProgressIndicator.progressProperty().unbind();
         loadPane.setVisible(false);
     }
@@ -278,5 +316,45 @@ public class UserPageController implements Initializable, LoadDataTask {
     @Override
     public void cancelled() {
         afterLoad();
+    }
+
+
+    @Override
+    public List<File> getFileList() {
+        List<File> files = new ArrayList<>();
+        if (pdfFile!= null) files.add(pdfFile);
+        return files;
+    }
+
+    @Override
+    public void succeeded() {
+        try {
+            patient.setResources(DatabaseDriver.getResources(patient.getId()));
+            resources = FXCollections.observableArrayList(patient.getResources());
+            resourceTableView.setItems(resources);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        pdfFile = null;
+        resourceNameTF.setText("");
+        loadPane.setVisible(false);
+        loadProgressIndicator.progressProperty().unbind();
+    }
+
+    @Override
+    public void cancel() {
+        loadPane.setVisible(false);
+        loadProgressIndicator.progressProperty().unbind();
+    }
+
+    @Override
+    public void fail() {
+        loadPane.setVisible(false);
+        loadProgressIndicator.progressProperty().unbind();
+    }
+
+    @Override
+    public void displayResultWindow(String type, String title, String message) {
+        Helper.displayHintWindow((Stage) countLB.getScene().getWindow(),type, title, message);
     }
 }

@@ -302,7 +302,7 @@ public class DatabaseDriver {
     }
     public static ArrayList<Resource> getResources(String userID) throws SQLException{
         ArrayList<Resource> resources = new ArrayList<>();
-        var sql = "SELECT id,name,resource FROM Resource where uid = ?";
+        var sql = "SELECT id,`type`,name,content FROM Resource where uid = ?";
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
@@ -312,13 +312,42 @@ public class DatabaseDriver {
             while (resultSet.next()){
                 String id = resultSet.getString("id");
                 String name = resultSet.getString("name");
-                String resource = resultSet.getString("resource");
-                resources.add(new Resource(id,name,resource));
+                String type = resultSet.getString("type");
+                String website = resultSet.getString("content");
+                resources.add(new Resource(id,type,name,website));
             }
         }finally {
             closeDB(preparedStatement, resultSet);
         }
         return resources;
+    }
+
+    public static Resource addResource(String userID, String type, String name, String content)throws SQLException{
+        var sql = "Insert into Resource(uid, `type`, `name`, content) VALUES (?,?,?,?)";
+        PreparedStatement preparedStatement =null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,userID);
+            preparedStatement.setString(2,type);
+            preparedStatement.setString(3,name);
+            preparedStatement.setString(4,content);
+
+            int i = preparedStatement.executeUpdate();
+            if (i != 0){
+                Statement statement = connection.createStatement();
+                resultSet = statement.executeQuery("SELECT LAST_INSERT_ID()");
+                resultSet.next();
+                int id = resultSet.getInt(1);
+                statement.close();
+
+                Resource resource = new Resource(id+"",type, name,content);
+                return resource;
+            }
+        }finally {
+            closeDB(preparedStatement, resultSet);
+        }
+        return null;
     }
 
     /*public static void insertResource(String uid) throws SQLException{
