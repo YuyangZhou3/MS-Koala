@@ -14,18 +14,19 @@
     </select>
 
     <insert id="insertResource" parameterType="com.medsec.entity.Resource">
-        INSERT INTO Resource (id, uid, name, resource)
-        VALUES (#{id}, #{uid}, #{name}, #{resource});
+        INSERT INTO Resource (id, uid, type, name, content)
+        VALUES (#{id}, #{uid}, #{type}, #{name}, #{content});
     </insert>
+
+    <update id="updateResource" parameterType="com.medsec.entity.Resource">
+        UPDATE Resource SET
+        type= #{type},
+        name= #{name},
+        content= #{content}
+        WHERE Resource.id= #{id}
+    </update>
 
     <delete id="deleteResource" parameterType="String">
         delete from Resource where Resource.id=#{id}
     </delete>
-
-    <update id="updateResource" parameterType="com.medsec.entity.Resource">
-        UPDATE Resource SET
-        Resource.name= #{name},
-        Resource.resource= #{resource}
-        WHERE Resource.id= #{id}
-    </update>
 </mapper>

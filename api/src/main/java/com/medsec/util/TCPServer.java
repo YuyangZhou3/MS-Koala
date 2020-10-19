@@ -332,11 +332,12 @@ class TCPServerProcess implements Runnable{
             // replace rsource to a new JSONObject
             Map<String, String> resourceMap = new HashMap<>();
             resourceMap.put("Uid", userId);
-            resourceMap.put("Resource", eachFilePath);
+            resourceMap.put("Type", "file");
             resourceMap.put("Name", name);
+            resourceMap.put("Content", eachFilePath);
 
             rsource = new JSONObject(resourceMap);
-            System.out.println(rsource.toJSONString());
+            System.out.println("Resource: " + rsource.toJSONString());
         }
 
         Database db = new Database();

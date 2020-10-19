@@ -4,6 +4,7 @@ import com.medsec.entity.Resource;
 import com.medsec.entity.User;
 import com.medsec.filter.Secured;
 import com.medsec.util.Database;
+import com.medsec.util.DefaultRespondEntity;
 import com.medsec.util.UserRole;
 import org.glassfish.jersey.server.JSONP;
 
@@ -71,6 +72,28 @@ public class ResourceAPI {
             return Response.status(Response.Status.FORBIDDEN).entity(null).build();
 
         return Response.ok(resource).build();
+    }
+
+    @DELETE														// delete http 请求
+    @Path("resources/{resourceID}")		// 请求路径
+    @Secured(UserRole.PATIENT)				// 病人身份
+    @JSONP(queryParam = "callback")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteResource(
+            @PathParam("resourceID") String resourceID){
+        Database db=new Database();
+        Resource resource = db.getResource(resourceID);
+        if(resource==null){
+            db.close();
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .entity(new DefaultRespondEntity("resource that to be deleted doesn't existed in db"))
+                    .build();
+        }else{
+            db.deleteResource(resourceID);
+            db.close();
+            return Response.ok(new DefaultRespondEntity()).build();
+        }
     }
 
     private List <Resource> retrieveUserResources(String uid) {
