@@ -85,6 +85,7 @@ public class ResourceAPI {
             @PathParam("resourceID") String resourceID){
         Database db=new Database();
         Resource resource = db.getResource(resourceID);
+        System.out.println(resource.getId());
         if(resource==null){
             db.close();
             return Response
@@ -92,7 +93,7 @@ public class ResourceAPI {
                     .entity(new DefaultRespondEntity("resource that to be deleted doesn't existed in db"))
                     .build();
         }
-
+        db = new Database();
         db.deleteResource(resourceID);
         db.close();
         return Response.ok(new DefaultRespondEntity()).build();

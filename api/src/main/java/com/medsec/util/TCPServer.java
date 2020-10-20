@@ -314,7 +314,8 @@ class TCPServerProcess implements Runnable{
                 if (!newFile.exists()){
                     newFile.getParentFile().getParentFile().mkdir();
                     newFile.getParentFile().mkdir();
-                    newFile.createNewFile();
+                    boolean isCreated = newFile.createNewFile();
+                    System.out.println("Created: " + isCreated);
                 }
                 DataInputStream clientData = new DataInputStream(in);
                 OutputStream output = new FileOutputStream(filePath);
