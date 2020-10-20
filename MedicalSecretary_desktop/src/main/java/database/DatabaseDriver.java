@@ -22,8 +22,12 @@ public class DatabaseDriver {
             System.out.println("Opened database successfully");
             return true;
         } catch ( Exception e ) {
-            Helper.displayHintWindow(null, "error", "Load data from database Failed!",
-                    "Connection was terminated, reopen the application to fix the issue.\nReason: "+ e.getMessage());
+            try {
+                Helper.displayHintWindow(null, "error", "Load data from database Failed!",
+                        "Connection was terminated,please check your network connection and reopen the application to fix the issue.\nReason: " + e.getMessage());
+            }catch (Exception exception){
+
+            }
             return false;
         }
     }
