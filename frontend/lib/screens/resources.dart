@@ -9,17 +9,30 @@ import 'package:frontend/screens/resourcedetail.dart';
 class Resources extends StatefulWidget {
   @override
   _ResourcesState createState() => _ResourcesState();
+
 }
 
 class _ResourcesState extends State<Resources> {
 
   List<Resource> _resources = List<Resource>();
 
+
   @override
   void initState() {
     super.initState();
     getResources();
   }
+
+  /*@override
+  void deactivate() {
+    super.deactivate();
+    print("deactivate");
+    var bool = ModalRoute.of(context).isCurrent;
+    if (bool) {
+      print("back");
+      initState();
+    }
+  }*/
 
   getResources() async {
     String currentToken = await Authentication.getCurrentToken();
@@ -89,7 +102,7 @@ class _ResourcesState extends State<Resources> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  resourcedetail(element)));
+                                  resourcedetail(element))).then((value) { if(value!=null && value){_resources = List<Resource>(); getResources();}});
                     }
                 )
             )).toList()
