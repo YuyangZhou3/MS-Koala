@@ -194,8 +194,9 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
                 }
                 else if(pdfRB.isSelected()){
                     if (name.contains("/")||name.contains("？")||name.contains("\\")||name.contains("<")
-                    || name.contains(":")||name.contains("*")||name.contains("\"")||name.contains(">")||name.contains("|")){
-                        throw new Exception("Resource name cannot contain '/ \\ ? * : < > |'");
+                    || name.contains(":")||name.contains("*")||name.contains("\"")||name.contains(">")||name.contains("|")
+                            ||name.contains("file")){
+                        throw new Exception("Resource name cannot contain '/ \\ ? * : < > |' or 'file'.");
                     }
                     String filename = "Resource-"+name + "-"+ patient.getId()+".pdf";
                     if (!new File("temp").exists()){
@@ -238,6 +239,7 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
         }));
         backBT.setOnAction((e)->{
             coverPane.setVisible(true);
+            resourcePane.setVisible(false);
             patient = null;
         });
         deleteIV.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event)->{
@@ -289,6 +291,9 @@ public class UserPageController implements Initializable, LoadDataTask , UploadF
     }
     @Override
     public void before() {
+        coverPane.setVisible(true);
+        resourcePane.setVisible(false);
+        patient = null;
         loadPane.setVisible(true);
         loadProgressIndicator.progressProperty().bind(loadTask.progressProperty());
     }
