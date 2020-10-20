@@ -140,15 +140,16 @@ DROP TABLE IF EXISTS `Resource`;
 CREATE TABLE `Resource` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL,
+  `type` varchar(15) DEFAULT NULL,
   `name` varchar(45) NOT NULL,
-  `resource` varchar(255) DEFAULT NULL,
+  `content` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`),
   CONSTRAINT `Resource_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `User` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `Resource` (`id`, `uid`, `name`, `resource`) VALUES
-(1,	1,	'Download Information',	'https://www.google.com');
+INSERT INTO `Resource` (`id`, `uid`, `type`, `name`, `content`) VALUES
+(1,	1,	'website', 'Download Information', 'https://www.google.com');
 
 DROP TABLE IF EXISTS `User`;
 CREATE TABLE `User` (

@@ -3,8 +3,10 @@ package com.medsec.entity;
 public class Resource {
     private String id;
     private String uid;
+    private String type;
     private String name;
-    private String resource;
+    private String content;
+
 
     public String getId() {
         return id;
@@ -22,6 +24,14 @@ public class Resource {
         this.uid = uid;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getName() {
         return name;
     }
@@ -30,12 +40,12 @@ public class Resource {
         this.name = name;
     }
 
-    public String getResource() {
-        return resource;
+    public String getContent() {
+        return content;
     }
 
-    public void setResource(String resource) {
-        this.resource = resource;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Resource id(final String id) {
@@ -48,13 +58,19 @@ public class Resource {
         return this;
     }
 
+    public Resource type(final String type) {
+        this.type = type;
+        return this;
+    }
+
     public Resource name(final String name) {
         this.name = name;
         return this;
     }
 
-    public Resource resource(final String resource) {
-        this.resource = resource;
+    public Resource content(final String content) {
+        this.content = content;
         return this;
     }
+
 }

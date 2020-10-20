@@ -191,9 +191,10 @@ public class DataManager {
     public Resource processResource(JSONObject rsource) {
         String id = (String) rsource.get("Id");
         String uid = (String) rsource.get("Uid");
+        String type = (String) rsource.get("Type");
         String name = (String) rsource.get("Name");
-        String res = (String) rsource.get("Resource");
-        Resource resource = new Resource().id(id).uid(uid).name(name).resource(res);
+        String content = (String) rsource.get("Content");
+        Resource resource = new Resource().id(id).uid(uid).type(type).name(name).content(content);
         return resource;
     }
 }

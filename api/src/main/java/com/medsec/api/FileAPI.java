@@ -40,7 +40,6 @@ public class FileAPI {
                     .header("Content-Disposition","attachment;filename=" + id)
                     .build();
 
-
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -79,5 +78,4 @@ public class FileAPI {
 
         return Response.ok(file).build();
     }
-
 }

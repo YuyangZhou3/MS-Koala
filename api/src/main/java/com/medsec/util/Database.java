@@ -423,7 +423,7 @@ public class Database {
 
     public void deleteResource(String resourceID){
         try {
-            ResourceMapper mapper=session.getMapper(ResourceMapper.class);
+            ResourceMapper mapper = session.getMapper(ResourceMapper.class);
             mapper.deleteResource(resourceID);
             session.commit();
         } finally {

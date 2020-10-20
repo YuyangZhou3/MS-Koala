@@ -289,13 +289,18 @@ class TCPServerProcess implements Runnable{
         if(rsource.containsKey("FileName")){			// if it contains FileName which means it is a pdf file
             System.out.println("File type: pdf");
             int bytesRead = 0;
-            int current = 0;
             InputStream in = null;
 
             // file path configuration
             String resoucePath = TCPServer.class.getResource("/").getPath();
+            System.out.println("resourcePath: "+resoucePath);
+
             String webappsDir = (new File(resoucePath,"../../")).getCanonicalPath();
+            System.out.println("webappsDir: "+webappsDir);
+
             String fileName = (String)rsource.get("FileName");
+            System.out.println("fileName: "+fileName);
+
             String userId = fileName.substring(fileName.lastIndexOf("-") + 1,
                     fileName.lastIndexOf(".")).trim();
             String eachFilePath = "/resource/" + userId + "/" + fileName;           // under the `resource` folder
@@ -309,7 +314,8 @@ class TCPServerProcess implements Runnable{
                 if (!newFile.exists()){
                     newFile.getParentFile().getParentFile().mkdir();
                     newFile.getParentFile().mkdir();
-                    newFile.createNewFile();
+                    boolean isCreated = newFile.createNewFile();
+                    System.out.println("Created: " + isCreated);
                 }
                 DataInputStream clientData = new DataInputStream(in);
                 OutputStream output = new FileOutputStream(filePath);
@@ -332,11 +338,12 @@ class TCPServerProcess implements Runnable{
             // replace rsource to a new JSONObject
             Map<String, String> resourceMap = new HashMap<>();
             resourceMap.put("Uid", userId);
-            resourceMap.put("Resource", eachFilePath);
+            resourceMap.put("Type", "file");
             resourceMap.put("Name", name);
+            resourceMap.put("Content", eachFilePath);
 
             rsource = new JSONObject(resourceMap);
-            System.out.println(rsource.toJSONString());
+            System.out.println("Resource: " + rsource.toJSONString());
         }
 
         Database db = new Database();
@@ -381,7 +388,6 @@ class TCPServerProcess implements Runnable{
 
             long size = (long)file.get("FileSize");
             byte[] buffer = new byte[1024];
-
 
             while (size > 0 && (bytesRead = clientData.read(buffer, 0, (int)Math.min(buffer.length, size))) != -1)
             {
