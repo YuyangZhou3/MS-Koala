@@ -1,6 +1,7 @@
 package database;
 
 import base.*;
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import util.Helper;
 import util.Constant;
 import java.sql.*;
@@ -21,6 +22,8 @@ public class DatabaseDriver {
             System.out.println("Opened database successfully");
             return true;
         } catch ( Exception e ) {
+            Helper.displayHintWindow(null, "error", "Load data from database Failed!",
+                    "Connection was terminated, reopen the application to fix the issue.\nReason: "+ e.getMessage());
             return false;
         }
     }
@@ -40,6 +43,9 @@ public class DatabaseDriver {
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
+            if (connection == null){
+                DatabaseDriver.connection();
+            }
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,year);
             resultSet = preparedStatement.executeQuery();
@@ -88,6 +94,9 @@ public class DatabaseDriver {
         String sql = "SELECT id, title, link from File where apptid = ?  ";
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
+        if (connection == null){
+            DatabaseDriver.connection();
+        }
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,appointment.getId());
@@ -110,6 +119,9 @@ public class DatabaseDriver {
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
+            if (connection == null){
+                DatabaseDriver.connection();
+            }
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,id);
             preparedStatement.setString(2,appID);
@@ -128,6 +140,9 @@ public class DatabaseDriver {
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
+            if (connection == null){
+                DatabaseDriver.connection();
+            }
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -204,6 +219,9 @@ public class DatabaseDriver {
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
+            if (connection == null){
+                DatabaseDriver.connection();
+            }
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -230,6 +248,9 @@ public class DatabaseDriver {
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
+            if (connection == null){
+                DatabaseDriver.connection();
+            }
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -253,6 +274,9 @@ public class DatabaseDriver {
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
+            if (connection == null){
+                DatabaseDriver.connection();
+            }
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -279,6 +303,9 @@ public class DatabaseDriver {
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
+            if (connection == null){
+                DatabaseDriver.connection();
+            }
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -306,6 +333,9 @@ public class DatabaseDriver {
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
+            if (connection == null){
+                DatabaseDriver.connection();
+            }
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, userID);
             resultSet = preparedStatement.executeQuery();
@@ -327,6 +357,9 @@ public class DatabaseDriver {
         PreparedStatement preparedStatement =null;
         ResultSet resultSet = null;
         try {
+            if (connection == null){
+                DatabaseDriver.connection();
+            }
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,userID);
             preparedStatement.setString(2,type);
@@ -349,23 +382,6 @@ public class DatabaseDriver {
         }
         return null;
     }
-
-    /*public static void insertResource(String uid) throws SQLException{
-        String sql = "INSERT INTO Resource (id,uid,name,website) VALUES (?,?,?,?)";
-        PreparedStatement preparedStatement =null;
-        ResultSet resultSet = null;
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,id);
-            int i = preparedStatement.executeUpdate();
-            if (i == 0){
-                throw new SQLException("The Resource was not inserted.");
-            }
-        }finally {
-            closeDB(preparedStatement, resultSet);
-        }
-    }*/
-
     private static void closeDB(PreparedStatement ps, ResultSet rs) {
         try {
             if(ps != null) {
