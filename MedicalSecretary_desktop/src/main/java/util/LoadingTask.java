@@ -1,5 +1,7 @@
 package util;
 
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
+import database.DatabaseDriver;
 import interfaces.LoadDataTask;
 import javafx.concurrent.Task;
 
@@ -35,5 +37,8 @@ public class LoadingTask extends Task<Integer> {
     protected void failed() {
         task.failed();
         getException().printStackTrace();
+        if (getException() instanceof CommunicationsException || DatabaseDriver.connection == null){
+            DatabaseDriver.connection();
+        }
     }
 }

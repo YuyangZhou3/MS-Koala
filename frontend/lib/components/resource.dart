@@ -1,14 +1,20 @@
 class Resource {
+  final String id;
   final String name;
-  final String website;
+  final String content;
+  final String type;
 
   Resource({
+    this.id,
     this.name,
-    this.website});
+    this.content,
+    this.type});
 
   factory Resource.fromJson(Map<String, dynamic> json) {
     return Resource(
+        id: json['id'],
         name: json['name'],
-        website: json['website']);
+        content: json['content'],
+        type: json['type']);
   }
 }
