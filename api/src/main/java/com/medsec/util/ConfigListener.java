@@ -66,7 +66,6 @@ public class ConfigListener implements ServletContextListener{
             TransactionFactory transactionFactory = new JdbcTransactionFactory();
             Environment environment = new Environment("development", transactionFactory, dataSource);
             Configuration configuration = new Configuration(environment);
-            configuration.addMapper(TestMapper.class);
             configuration.addMapper(UserMapper.class);
             configuration.addMapper(PatientMapper.class);
             configuration.addMapper(AppointmentMapper.class);
