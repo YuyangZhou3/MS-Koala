@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "94177092800",
-    "firebase_url": "https://medical-heal.firebaseio.com",
-    "project_id": "medical-heal",
-    "storage_bucket": "medical-heal.appspot.com"
+    "project_number": "850266950925",
+    "firebase_url": "https://software-project-example-01.firebaseio.com",
+    "project_id": "software-project-example-01",
+    "storage_bucket": "software-project-example-01.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:94177092800:android:0eae1682d82b16def33925",
+        "mobilesdk_app_id": "1:850266950925:android:1a83b136ac1f7410883444",
         "android_client_info": {
           "package_name": "com.medicalheal.frontend"
         }
       },
       "oauth_client": [
         {
-          "client_id": "94177092800-fehjnpcvl5cl7aco79i84v84idt8imid.apps.googleusercontent.com",
+          "client_id": "850266950925-v5kolotpvvbpf2jsd5b24klp22bko9bo.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCmfuQ9UHTmCVVcECA7jadsVnw8_8zUlQg"
+          "current_key": "AIzaSyBlES3Qd9oHp-TDxYbQ8vLjVxisUAIRY04"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "94177092800-fehjnpcvl5cl7aco79i84v84idt8imid.apps.googleusercontent.com",
+              "client_id": "850266950925-v5kolotpvvbpf2jsd5b24klp22bko9bo.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

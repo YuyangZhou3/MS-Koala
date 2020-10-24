@@ -48,9 +48,9 @@ public class AuthenticationAPI {
             user = issueToken(user);
 
             //TODO: change this to a transactional query instead of 2 connections
-            Database db2 = new Database();
-            db2.updateUser(user);
-            //db.updateTokenValidFromDate(user.getId());
+            db = new Database();
+            db.updateUser(user);
+
             // Return the token on the response, omit some sensitive information
             User respondUser = user
                     .token_valid_from(null)
