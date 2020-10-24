@@ -1,6 +1,10 @@
 package com.medsec.entity;
 
 public class Mail {
+    private String id;
+    private String mailto;
+    private String content;
+
     public String getId() {
         return id;
     }
@@ -25,24 +29,27 @@ public class Mail {
         this.content = content;
     }
 
-    private String id;
-    private String mailto;
-    private String content;
-
-
-
     public Mail id(final String _id) {
         setId(_id);
         return this;
     }
 
     public Mail mailto(final String _mailto) {
-        setId(mailto);
+        setMailto(_mailto);
         return this;
     }
 
     public Mail content(final String _content) {
         setContent(_content);
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Mail{" +
+                "id='" + id + '\'' +
+                ", mailto='" + mailto + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 }

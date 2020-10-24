@@ -1,6 +1,5 @@
 package com.medsec.api;
 
-import com.medsec.entity.Callum;
 import com.medsec.entity.ChangePasswordRequestTemplate;
 import com.medsec.entity.User;
 import com.medsec.util.ArgumentException;
@@ -11,8 +10,6 @@ import com.medsec.util.DefaultRespondEntity;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.time.Instant;
-import java.time.LocalDate;
 
 /**
  * RESTful APIs for User Account.
@@ -34,11 +31,9 @@ public class UserAPI {
             // Now the user is ready to be activated.
             // Set new password
             user.password(requestUser.getPassword());
-            // Update database
             updateUserPassword(user);
 
             return Response.ok(new DefaultRespondEntity()).build();
-
         } catch (ArgumentException e) {
             // Invalid input
             return Response
@@ -79,7 +74,6 @@ public class UserAPI {
             // Update the password
             // Set new password
             user.password(requestUser.getNew_password());
-            // Update database
             updateUserPassword(user);
 
             return Response.ok(new DefaultRespondEntity()).build();
@@ -100,15 +94,6 @@ public class UserAPI {
 
         }
     }
-    @POST
-    @Path("user/cal")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response testCallum(Callum c) {
-
-        return Response.ok(LocalDate.now()).build();
-    }
-
 
     private User verifyUserInformation(User u) throws ArgumentException, AuthenticationException, Exception {
 
@@ -131,7 +116,6 @@ public class UserAPI {
             throw new Exception("User has been activated");
 
         return user;
-
     }
 
     private void updateUserPassword(User u) throws ArgumentException {
@@ -141,7 +125,5 @@ public class UserAPI {
 
         Database db = new Database();
         db.updateUserPassword(u.getId(), u.getPassword());
-
     }
-
 }

@@ -1,11 +1,7 @@
 package com.medsec.api;
 
-import com.medsec.entity.TestType;
-import com.medsec.dao.TestMapper;
 import com.medsec.util.Authentication;
-import com.medsec.util.ConfigListener;
 import com.medsec.util.Response;
-import org.apache.ibatis.session.SqlSession;
 import org.glassfish.jersey.server.JSONP;
 import org.simplejavamail.email.Email;
 import org.simplejavamail.email.EmailBuilder;
