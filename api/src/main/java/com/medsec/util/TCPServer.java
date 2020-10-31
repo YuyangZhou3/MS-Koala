@@ -202,13 +202,15 @@ class TCPServerProcess implements Runnable{
             db.insertAppointment(apptointment);
             try {
                 PushNotification pn = new PushNotification();
-                HashMap<String, String> pnResult = pn.sendNotification(apptointment);
+                HashMap<String, String> pnResult = pn.sendNotification(appt);
                 log.info("Push notification for new appointment");
+                System.out.println("Push notification for new appointment");
                 for (String token: pnResult.keySet()) {
                     log.info("FCMToken: " + token + " Push Notification Request:" + pnResult.get(token));
                 }
             } catch (IOException e) {
                 log.error("Push notification error");
+                System.out.println("Push notification error");
             }
         } else {
             Appointment appointment = dataManager.processAppt(appt);
@@ -293,20 +295,17 @@ class TCPServerProcess implements Runnable{
 
             // file path configuration
             String resoucePath = TCPServer.class.getResource("/").getPath();
-            System.out.println("resourcePath: "+resoucePath);
 
             String webappsDir = (new File(resoucePath,"../../")).getCanonicalPath();
-            System.out.println("webappsDir: "+webappsDir);
 
             String fileName = (String)rsource.get("FileName");
-            System.out.println("fileName: "+fileName);
 
             String userId = fileName.substring(fileName.lastIndexOf("-") + 1,
                     fileName.lastIndexOf(".")).trim();
             String eachFilePath = "/resource/" + userId + "/" + fileName;           // under the `resource` folder
             String filePath = webappsDir + eachFilePath;
-            System.out.println(eachFilePath);
-            System.out.println(filePath);
+            System.out.println("eachFilePath: " + eachFilePath);
+            System.out.println("filePath: " + filePath);
 
             try {
                 in = connectionSocket.getInputStream();
@@ -352,6 +351,17 @@ class TCPServerProcess implements Runnable{
             log.info("insert new resource");
             Resource resource = dataManager.processResource(rsource);
             db.insertResource(resource);
+
+            try {
+                PushNotification pn = new PushNotification();
+                HashMap<String, String> pnResult = pn.sendNotification(rsource);
+                log.info("Push notification for new resource");
+                for (String token: pnResult.keySet()) {
+                    log.info("FCMToken: " + token + " Push Notification Request:" + pnResult.get(token));
+                }
+            } catch (IOException e) {
+                log.error("Push notification error");
+            }
         } else {
             log.info("update existed resource");
             Resource resource = dataManager.processResource(rsource);
@@ -360,7 +370,7 @@ class TCPServerProcess implements Runnable{
         return false;
     }
 
-    public boolean fileHandler(JSONObject file) throws IOException {
+    private boolean fileHandler(JSONObject file) throws IOException {
         int bytesRead = 0;
         int current = 0;
         InputStream in = null;

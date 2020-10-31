@@ -15,7 +15,7 @@ class FirebaseNotifications {
 
     _firebaseMessaging.getToken().then((token) {
        fcmtoken=token;
-        print("fcm token" + fcmtoken);
+        print("fcm token: " + fcmtoken);
     });
   }
 

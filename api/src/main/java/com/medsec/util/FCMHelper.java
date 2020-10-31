@@ -31,7 +31,7 @@ public class FCMHelper {
     /**
      * Your SECRET server key
      */
-    private static final String FCM_SERVER_KEY = "AAAAf-7lJeU:APA91bEsDeoWLelb1MVlg8JH6_-nL1BilHhRekTiy7wSTXyYLLg9aqR13TPI1NVmRdfkMhLNf_nvhAdMdRztFlhxneS1zDO3y82ceHJ2QXlJhcUfff4tqQMNYOcH4FP9uOUaIEn4iKij";
+    private static final String FCM_SERVER_KEY = "AAAAxffcDQ0:APA91bEcxTizVU3LuIHb-zaQBooL5IDUsCLJSg--Cgg2Ipfhj74Qxw4M2eF5PIJn29Kdw7-Vu46GLijF2XwxNn1fQ8e8BRBcvQX30sH0a3WeegYOYXFz3HGbZelvQ7UtwGXZ2cYYCj2e";
 
     public static FCMHelper getInstance() {
         if (instance == null) instance = new FCMHelper();
