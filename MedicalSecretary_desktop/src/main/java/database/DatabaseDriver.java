@@ -71,7 +71,9 @@ public class DatabaseDriver {
                 String date_change = resultSet.getString("date_change");
                 String note = resultSet.getString("note");
                 String user_note = resultSet.getString("user_note");
-
+                if(middlename == null) middlename = "";
+                if (firstname == null) firstname = "";
+                if (surname == null) surname = "";
                 Appointment appointment = new Appointment(id,uid,firstname+" "+ middlename+" "+ surname, did,doctorName,title,appDate,duration,status);
                 appointment.setChangeDate(date_change);
                 appointment.setCreateDate(date_create);
@@ -322,6 +324,9 @@ public class DatabaseDriver {
                 String street = resultSet.getString("street");
                 String suburb = resultSet.getString("suburb");
                 String state = resultSet.getString("state");
+                if(middlename == null) middlename = "";
+                if (firstname == null) firstname = "";
+                if (surname == null) surname = "";
                 Patient patient = new Patient(id,firstname,middlename,surname,dob,email,street,suburb,state);
                 patient.setResources(getResources(id));
                 patients.add(patient);
